@@ -16,10 +16,15 @@ return new class extends Migration
             $table->string('name');
             $table->text('image_url');
             $table->text('detail');
-            $table->decimal('price');
-            $table->id('category_id');
-            $table->integer('stock');
+            $table->unsignedInteger('price');
+            $table->unsignedBigInteger('category_id');
+            $table->unsignedInteger('stock');
             $table->timestamps();
+
+            $table->foreign('category_id')
+                ->references('id')
+                ->on('categories')
+                ->onDelete('cascade');
         });
     }
 
