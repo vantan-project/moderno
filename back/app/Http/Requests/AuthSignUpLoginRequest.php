@@ -24,9 +24,9 @@ class AuthSignUpLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'     => 'required|string|max:50',
-            'email'    => 'required|email|max:255|unique:users,email',
-            'password' => 'required|string|max:100',
+            'auth.name'     => 'required|string|max:50',
+            'auth.email'    => 'required|email|max:255|unique:users,email',
+            'auth.password' => 'required|string|max:100',
         ];
     }
 
@@ -36,10 +36,12 @@ class AuthSignUpLoginRequest extends FormRequest
             'name.required'     => '名前は必須です。',
             'name.string'       => '名前は文字列で入力してください。',
             'name.max'          => '名前は50文字以内で入力してください。',
+
             'email.required'    => 'メールアドレスは必須です。',
             'email.email'       => '正しいメールアドレスの形式で入力してください。',
             'email.max'         => 'メールアドレスは255文字以内で入力してください。',
             'email.unique'      => 'このメールアドレスは既に登録されています。',
+
             'password.required' => 'パスワードは必須です。',
             'password.string'   => 'パスワードは文字列で入力してください。',
             'password.max'      => 'パスワードは100文字以内で入力してください。',
