@@ -10,6 +10,10 @@ class Furniture extends Model
 {
     protected $fillable = ['name','image_url','detail','price','category_id','stock'];
 
+    function category() {
+        return $this->belongsTo(Category::class);
+    }
+
     public static function uploadS3($imageFile) {
         $path = Storage::disk('s3')->putFile('furniture', $imageFile);
         return config('filesystems.disks.s3.url') . '/' . $path;

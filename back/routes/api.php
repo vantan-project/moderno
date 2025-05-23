@@ -9,8 +9,15 @@ Route::prefix('auth')->group(function () {
     Route::post('/sign-up', [AuthController::class, 'signUp']);
 });
 
-Route::apiResource('furniture', FurnitureController::class);
+Route::prefix('furniture')->group(function () {
+    Route::get('/', [FurnitureController::class, 'index']);
+    Route::get('/{id}', [FurnitureController::class, 'show']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
-    // 認証後のAPIルーティングをかく
+    Route::prefix('furniture')->group(function () {
+        Route::post('/', [FurnitureController::class, 'store']);
+        Route::patch('/{id}', [FurnitureController::class, 'update']);
+        Route::delete('/{id}', [FurnitureController::class, 'destroy']);
+    });
 });
