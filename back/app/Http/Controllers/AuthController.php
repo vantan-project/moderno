@@ -12,8 +12,8 @@ class AuthController extends Controller
 {
     public function login(AuthLoginRequest $request)
     {
-        $email = $request['email'];
-        $password = $request['password'];
+        $email = $request["auth"]['email'];
+        $password = $request["auth"]['password'];
 
         if (Auth::attempt(['email' => $email, 'password' => $password])) {
             $user = Auth::user();
@@ -32,9 +32,9 @@ class AuthController extends Controller
     }
 
     public function signUp(AuthSignUpLoginRequest $request) {
-        $name = $request['name'];
-        $email = $request['email'];
-        $password = $request['password'];
+        $name = $request["auth"]['name'];
+        $email = $request["auth"]['email'];
+        $password = $request["auth"]['password'];
 
         $user = User::create([
             'name'     => $name,
