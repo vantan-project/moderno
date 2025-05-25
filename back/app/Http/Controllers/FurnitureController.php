@@ -45,6 +45,22 @@ class FurnitureController extends Controller
         ]);
     }
 
+    public function show($id) {
+        $furniture = Furniture::findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'furniture' => [
+                'name' => $furniture->name,
+                'imageUrl' => $furniture->image_url,
+                'detail' => $furniture->detail,
+                'price' => $furniture->price,
+                'categoryName' => $furniture->category->name,
+                'stock' => $furniture->stock,
+            ]
+        ]);
+    }
+
     public function store(FurnitureStoreRequest $request) {
         $input = $request["furniture"];
 
