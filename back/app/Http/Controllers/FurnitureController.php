@@ -10,9 +10,9 @@ use Illuminate\Http\Request;
 class FurnitureController extends Controller
 {
     public function index(Request $request) {
-        $categoryId = $request['categoryId'];
-        $currentPage = $request['currentPage'];
-        $keyword = $request['keyword'];
+        $categoryId = $request['search.categoryId'];
+        $currentPage = $request['search.currentPage'];
+        $keyword = $request['search.keyword'];
 
        $furnitures = Furniture::where('category_id', $categoryId);
 
