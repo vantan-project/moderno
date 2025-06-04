@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Exception;
 
 class Furniture extends Model
 {
@@ -12,6 +11,10 @@ class Furniture extends Model
 
     function category() {
         return $this->belongsTo(Category::class);
+    }
+
+    function orders() {
+        return $this->hasMany(Order::class);
     }
 
     public static function uploadS3($imageFile) {

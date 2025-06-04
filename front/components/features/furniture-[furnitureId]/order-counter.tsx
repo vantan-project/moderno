@@ -1,6 +1,6 @@
-import { RemoveIcon } from "@/components/icons/remove-icon";
-import { Order } from "./page";
-import { AddIcon } from "@/components/icons/add-icon";
+import { RemoveIcon } from "@/components/shared/icons/remove-icon";
+import { Order } from "../../../app/furniture/[furnitureId]/page";
+import { AddIcon } from "@/components/shared/icons/add-icon";
 
 type Props = {
     order: Order,

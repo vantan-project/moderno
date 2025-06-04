@@ -5,10 +5,10 @@ import {
   FurnitureIndexRequest,
   FurnitureIndexResponse,
 } from "@/api/furniture-index";
-import { ButtonWithLabel } from "@/components/button-with-label";
-import { CartIcon } from "@/components/icons/cart-icon";
-import { HeartIcon } from "@/components/icons/heart-icon";
-import { Search } from "@/components/search";
+import { ButtonWithLabel } from "@/components/shared/button-with-label";
+import { CartIcon } from "@/components/shared/icons/cart-icon";
+import { HeartIcon } from "@/components/shared/icons/heart-icon";
+import { Search } from "@/components/shared/search";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -43,7 +43,7 @@ export default function Page() {
         onChange={(e) => SetSearch({ ...search, keyword: e.target.value })}
       />
 
-      <div className="grid grid-cols-3 gap-[2vw] p-[2vw] pt-32">
+      <div className="grid grid-cols-3 gap-[2vw] p-[2vw]">
         {furnitures.map((furniture) => (
           <div
             className="rounded-2xl p-[2vw] outline-void hover:outline"

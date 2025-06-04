@@ -12,6 +12,7 @@ Route::prefix('auth')->group(function () {
 
 Route::prefix('furniture')->group(function () {
     Route::get('/', [FurnitureController::class, 'index']);
+    Route::get('/weekly-ranking', [FurnitureController::class, 'weeklyRanking']);
     Route::get('/{id}', [FurnitureController::class, 'show']);
 });
 
@@ -20,6 +21,12 @@ Route::prefix('category')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/token', function() {
+        return response()->json([
+            'success' => true,
+        ]);
+    });
+
     Route::prefix('furniture')->group(function () {
         Route::post('/', [FurnitureController::class, 'store']);
         Route::patch('/{id}', [FurnitureController::class, 'update']);

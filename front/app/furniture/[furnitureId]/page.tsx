@@ -4,11 +4,11 @@ import { FurnitureShow, FurnitureShowResponse } from "@/api/furniture-show";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { OrderCounter } from "./order-counter";
-import { ButtonWithIcon } from "@/components/button-with-icon";
-import { CartIcon } from "@/components/icons/cart-icon";
-import { HeartIcon } from "@/components/icons/heart-icon";
-import { BagIcon } from "@/components/icons/bag-icon";
+import { OrderCounter } from "../../../components/features/furniture-[furnitureId]/order-counter";
+import { ButtonWithIcon } from "@/components/shared/button-with-icon";
+import { CartIcon } from "@/components/shared/icons/cart-icon";
+import { HeartIcon } from "@/components/shared/icons/heart-icon";
+import { BagIcon } from "@/components/shared/icons/bag-icon";
 
 export type Order = {
   furnitureId: number;
@@ -38,7 +38,7 @@ export default function Page() {
   if (!furniture) return;
 
   return (
-    <section className="grid grid-cols-2 p-16 pt-28 gap-12 text-void border-void">
+    <section className="grid grid-cols-2 px-12 gap-12 text-void border-void">
       <figure>
         <Image
           className="w-full h-auto rounded-2xl"

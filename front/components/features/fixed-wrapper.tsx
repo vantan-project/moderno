@@ -1,15 +1,17 @@
 "use client";
 
 import { categoryIndex, CategoryIndexResponse } from "@/api/category-index";
-import { ButtonWithLabel } from "@/components/button-with-label";
-import { CartIcon } from "@/components/icons/cart-icon";
-import { HeartIcon } from "@/components/icons/heart-icon";
-import { UserIcon } from "@/components/icons/user-icon";
+import { ButtonWithLabel } from "@/components/shared/button-with-label";
+import { CartIcon } from "@/components/shared/icons/cart-icon";
+import { HeartIcon } from "@/components/shared/icons/heart-icon";
+import { UserIcon } from "@/components/shared/icons/user-icon";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { LogoIcon } from "@/components/icons/logo-icon";
+import { LogoIcon } from "@/components/shared/icons/logo-icon";
+import { Token } from "@/api/token";
+import { LoginIcon } from "../shared/icons/login-icon";
 
 type Props = {
   children: React.ReactNode;
@@ -23,16 +25,26 @@ export function FixedWrapper({ children }: Props) {
     !pathname.startsWith("/sign-up"),
   ];
   const allTrue = conditions.every((condition) => condition === true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const tokenApi = async () => {
+      const res = await Token();
+      setIsLoggedIn(res.success);
+    };
+
+    tokenApi();
+  }, []);
 
   return (
     <>
       {allTrue && (
         <>
           <SideHeader />
-          <UserControls />
+          <UserControls isLoggedIn={isLoggedIn} />
         </>
       )}
-      <div className={allTrue ? "pl-64" : ""}>{children}</div>
+      <div className={allTrue ? "pl-64 py-28" : ""}>{children}</div>
     </>
   );
 }
@@ -80,7 +92,7 @@ const SideHeader = () => {
   );
 };
 
-const UserControls = () => {
+const UserControls = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   return (
     <div className="fixed top-8 right-8 z-10">
       <div className="flex items-center gap-8">
@@ -90,9 +102,16 @@ const UserControls = () => {
         <ButtonWithLabel onClick={() => {}} label="カート">
           <CartIcon className="w-10 h-10" />
         </ButtonWithLabel>
-        <button>
-          <UserIcon className="w-12 h-12" />
-        </button>
+
+        {isLoggedIn ? (
+          <button>
+            <UserIcon className="w-12 h-12" />
+          </button>
+        ) : (
+          <Link href="/login">
+            <LoginIcon className="w-12 h-12" />
+          </Link>
+        )}
       </div>
     </div>
   );
