@@ -1,103 +1,106 @@
+"use client";
+
+import { TextWithLabel } from "@/components/features/text-with-label";
+import { FirstView } from "../components/features/first-view";
+import { useEffect, useState } from "react";
+import {
+  FurnitureWeeklyRanking,
+  FurnitureWeeklyRankingResponse,
+} from "@/api/furniture-weekly-ranking";
 import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+export default function Page() {
+  const [weeklyRankings, setWeeklyRankings] = useState<
+    FurnitureWeeklyRankingResponse["furnitures"]
+  >([]);
+  const [newArrivals, setNewArrivals] = useState([]);
+
+  useEffect(() => {
+    const weeklyRankingApi = async () => {
+      const res = await FurnitureWeeklyRanking();
+      setWeeklyRankings(res.furnitures);
+    };
+
+    weeklyRankingApi();
+  }, []);
+
+  const sectionTitleClassName = "border-b pl-2 pb-2 mx-4";
+  const scrollableClassName =
+    "flex gap-10 overflow-x-auto w-full py-4 [scrollbar-color:var(--color-void)_transparent]";
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="px-12 flex flex-col gap-20">
+      <FirstView />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      {weeklyRankings.length > 0 && (
+        <section>
+          <div className={sectionTitleClassName}>
+            <TextWithLabel text="WEEKLY RANKING" label="週間ランキング" />
+          </div>
+
+          <div className={scrollableClassName}>
+            {weeklyRankings.map((furniture, index) => (
+              <Link
+                href={`/furniture/${furniture.id}`}
+                className="rounded-2xl flex-shrink-0 overflow-hidden"
+                key={furniture.id}
+              >
+                <div className="relative">
+                  <RankingLabel ranking={index + 1} />
+                  <Image
+                    className="w-52 h-52 hover:brightness-75 transition-all ease-out duration-700"
+                    src={furniture.imageUrl}
+                    alt={furniture.name}
+                    width={200}
+                    height={200}
+                  />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {newArrivals.length > 0 && (
+        <section>
+          <div className={sectionTitleClassName}>
+            <TextWithLabel text="NEW ARRIVALS" label="新着商品" />
+          </div>
+        </section>
+      )}
     </div>
   );
 }
+
+const RankingLabel = ({ ranking }: { ranking: number }): React.ReactNode => {
+  const defaultColor = {
+    bgColor: "#F1F1F1F1",
+    textColor: "var(--color-void)",
+  };
+  const colors: { [key: number]: { bgColor: string; textColor: string } } = {
+    1: { bgColor: "#D9BA72", textColor: "var(--color-core)" },
+    2: { bgColor: "#ABABAB", textColor: "var(--color-core)" },
+    3: { bgColor: "#947A61", textColor: "var(--color-core)" },
+  };
+
+  return (
+    <div
+      className="absolute top-0 left-0 pt-1 pl-2 z-10 w-16 h-16 font-bold text-2xl [clip-path:polygon(0_0,100%_0,0_100%)]"
+      style={{
+        backgroundColor: colors[ranking]
+          ? colors[ranking].bgColor
+          : defaultColor.bgColor,
+      }}
+    >
+      <p
+        style={{
+          color: colors[ranking]
+            ? colors[ranking].textColor
+            : defaultColor.textColor,
+        }}
+      >
+        {ranking}
+      </p>
+    </div>
+  );
+};

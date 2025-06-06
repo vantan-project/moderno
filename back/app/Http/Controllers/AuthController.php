@@ -12,10 +12,9 @@ class AuthController extends Controller
 {
     public function login(AuthLoginRequest $request)
     {
-        $email = $request["auth"]['email'];
-        $password = $request["auth"]['password'];
+        $auth = $request["auth"];
 
-        if (Auth::attempt(['email' => $email, 'password' => $password])) {
+        if (Auth::attempt(['email' => $auth['email'], 'password' => $auth['password']])) {
             $user = Auth::user();
 
             return response()->json([
@@ -32,14 +31,12 @@ class AuthController extends Controller
     }
 
     public function signUp(AuthSignUpLoginRequest $request) {
-        $name = $request["auth"]['name'];
-        $email = $request["auth"]['email'];
-        $password = $request["auth"]['password'];
+        $auth = $request["auth"];
 
         $user = User::create([
-            'name'     => $name,
-            'email'    => $email,
-            'password' => Hash::make($password),
+            'name'     => $auth['name'],
+            'email'    => $auth['email'],
+            'password' => Hash::make($auth['password']),
         ]);
 
         return response()->json([

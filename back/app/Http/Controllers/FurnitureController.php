@@ -6,13 +6,14 @@ use App\Http\Requests\FurnitureStoreRequest;
 use App\Http\Requests\FurnitureUpdateRequest;
 use App\Models\Furniture;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class FurnitureController extends Controller
 {
     public function index(Request $request) {
-        $categoryId = $request['categoryId'];
-        $currentPage = $request['currentPage'];
-        $keyword = $request['keyword'];
+        $categoryId = $request['search.categoryId'];
+        $currentPage = $request['search.currentPage'];
+        $keyword = $request['search.keyword'];
 
        $furnitures = Furniture::where('category_id', $categoryId);
 
@@ -112,6 +113,31 @@ class FurnitureController extends Controller
         return response()->json([
             'success' => true,
             'messages' => ['商品を削除しました。'],
+        ]);
+    }
+
+    public function weeklyRanking() {
+        $oneWeekAgo = Carbon::now()->subWeek();
+
+        $furnitures = Furniture::whereHas('orders', function ($query) use ($oneWeekAgo) {
+            $query->whereBetween('created_at', [$oneWeekAgo, Carbon::now()]);
+        })
+            ->withSum(['orders as recent_order_count_sum' => function ($query) use ($oneWeekAgo) {
+                $query->where('created_at', '>=', $oneWeekAgo);
+            }], 'count')
+            ->orderByDesc('recent_order_count_sum')
+            ->take(10)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'furnitures' => $furnitures->map(function ($furniture) {
+                return [
+                    'id' => $furniture->id,
+                    'name' => $furniture->name,
+                    'imageUrl' => $furniture->image_url,
+                ];
+            })
         ]);
     }
 }

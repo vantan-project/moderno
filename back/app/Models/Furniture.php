@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Exception;
 
 class Furniture extends Model
 {
@@ -12,6 +11,10 @@ class Furniture extends Model
 
     function category() {
         return $this->belongsTo(Category::class);
+    }
+
+    function orders() {
+        return $this->hasMany(Order::class);
     }
 
     public static function uploadS3($imageFile) {
@@ -25,19 +28,29 @@ class Furniture extends Model
             $s3BaseUrl = config('filesystems.disks.s3.url') . '/';
             $filePath = str_replace($s3BaseUrl, '', $furniture->image_url);
 
-            return Storage::disk('s3')->delete($filePath);
+            $disk = Storage::disk('s3');
+
+            if ($filePath && $disk->exists($filePath)) {
+                return $disk->delete($filePath);
+            }
+
+            return true;
         });
 
         static::updating(function ($furniture) {
-            if (! $furniture->isDirty('image_url')) {
+           if (! $furniture->isDirty('image_url')) {
                 return;
             }
-            $originalImageUrl = $furniture->getOriginal('image_url');
 
+            $originalImageUrl = $furniture->getOriginal('image_url');
             $s3BaseUrl = config('filesystems.disks.s3.url') . '/';
             $filePath = str_replace($s3BaseUrl, '', $originalImageUrl);
 
-            Storage::disk('s3')->delete($filePath);
+            $disk = Storage::disk('s3');
+
+            if ($filePath && $disk->exists($filePath)) {
+                $disk->delete($filePath);
+            }
         });
     }
 }
