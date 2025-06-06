@@ -28,12 +28,16 @@ export default function Page() {
   >([]);
 
   useEffect(() => {
-    const indexApi = async () => {
-      const indexResponse = await FurnitureIndex({ search });
-      setFurnitures(indexResponse.furnitures);
-    };
+    const timer = setTimeout(() => {
+      const indexApi = async () => {
+        const indexResponse = await FurnitureIndex({ search });
+        setFurnitures(indexResponse.furnitures);
+      };
 
-    indexApi();
+      indexApi();
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, [search]);
 
   return (
