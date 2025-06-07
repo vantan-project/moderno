@@ -9,20 +9,31 @@ import {
 } from "@/api/furniture-weekly-ranking";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  FurnitureNewArrival,
+  FurnitureNewArrivalResponse,
+} from "@/api/furniture-new-arrival";
 
 export default function Page() {
   const [weeklyRankings, setWeeklyRankings] = useState<
     FurnitureWeeklyRankingResponse["furnitures"]
   >([]);
-  const [newArrivals, setNewArrivals] = useState([]);
+  const [newArrivals, setNewArrivals] = useState<
+    FurnitureNewArrivalResponse["furnitures"]
+  >([]);
 
   useEffect(() => {
     const weeklyRankingApi = async () => {
       const res = await FurnitureWeeklyRanking();
       setWeeklyRankings(res.furnitures);
     };
+    const newArrivalApi = async () => {
+      const res = await FurnitureNewArrival();
+      setNewArrivals(res.furnitures);
+    };
 
     weeklyRankingApi();
+    newArrivalApi();
   }, []);
 
   const sectionTitleClassName = "border-b pl-2 pb-2 mx-4";

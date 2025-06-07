@@ -140,4 +140,46 @@ class FurnitureController extends Controller
             })
         ]);
     }
+
+    public function recommendation($id) {
+        $RECOMMENDATION_LIMIT = 10;
+        $furniture = Furniture::find($id);
+
+        $topFurnitures = $furniture->transitionsFrom()
+            ->with('toFurniture')
+            ->orderByDesc('count')
+            ->limit($RECOMMENDATION_LIMIT)
+            ->get()
+            ->map(fn ($transition) => [
+                'id' => $transition->toFurniture->id,
+                'name' => $transition->toFurniture->name,
+                'imageUrl' => $transition->toFurniture->image_url,
+                'price' => $transition->toFurniture->price,
+            ]);
+
+        $needed = $RECOMMENDATION_LIMIT - $topFurnitures->count();
+
+        $addFurnitures = collect();
+        if ($needed > 0) {
+            $excludedIds = $topFurnitures->pluck('id')->toArray();
+
+            $addFurnitures = Furniture::where('category_id', $furniture->category_id)
+                ->where('id', '<>', $furniture->id)
+                ->whereNotIn('id', $excludedIds)
+                ->orderBy('created_at')
+                ->limit($needed)
+                ->get()
+                ->map(fn($furniture) => [
+                    'id' => $furniture->id,
+                    'name' => $furniture->name,
+                    'imageUrl' => $furniture->image_url,
+                    'price' => $furniture->price,
+                ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'furnitures' => $topFurnitures->concat($addFurnitures)->values(),
+        ]);
+    }
 }

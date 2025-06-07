@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FurnitureController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TransitionControler;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -13,11 +14,16 @@ Route::prefix('auth')->group(function () {
 Route::prefix('furniture')->group(function () {
     Route::get('/', [FurnitureController::class, 'index']);
     Route::get('/weekly-ranking', [FurnitureController::class, 'weeklyRanking']);
+    Route::get('/recommendation/{id}', [FurnitureController::class, 'recommendation']);
     Route::get('/{id}', [FurnitureController::class, 'show']);
 });
 
 Route::prefix('category')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);
+});
+
+Route::prefix('transition')->group(function () {
+    Route::patch('/', [TransitionControler::class, 'update']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
