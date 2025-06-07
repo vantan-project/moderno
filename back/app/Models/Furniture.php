@@ -17,6 +17,11 @@ class Furniture extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function transitionsFrom()
+    {
+        return $this->hasMany(Transition::class, 'from_furniture_id');
+    }
+
     public static function uploadS3($imageFile) {
         $path = Storage::disk('s3')->putFile('furniture', $imageFile);
         return config('filesystems.disks.s3.url') . '/' . $path;
