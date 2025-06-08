@@ -13,6 +13,7 @@ Route::prefix('auth')->group(function () {
 Route::prefix('furniture')->group(function () {
     Route::get('/', [FurnitureController::class, 'index']);
     Route::get('/weekly-ranking', [FurnitureController::class, 'weeklyRanking']);
+    Route::get('/new-arrival', [FurnitureController::class, 'newArrival']);
     Route::get('/{id}', [FurnitureController::class, 'show']);
 });
 
