@@ -56,7 +56,7 @@ export default function Page() {
   ) => {
     await TransitionUpdate({
       toFurnitureId,
-      fromFurnitureId
+      fromFurnitureId,
     });
   };
 
@@ -91,7 +91,11 @@ export default function Page() {
               <span className="text-xs">（税込）</span>
             </h3>
             <div className="grid grid-cols-[35%_65%] grid-rows-[42px_42px] gap-5">
-              <OrderCounter order={order} setOrder={setOrder} stock={furniture.stock} />
+              <OrderCounter
+                order={order}
+                setOrder={setOrder}
+                stock={furniture.stock}
+              />
               <ButtonWithIcon icon={<CartIcon />}>
                 カートに入れる
               </ButtonWithIcon>
@@ -102,36 +106,38 @@ export default function Page() {
         </article>
       </div>
 
-      <div className="pt-20">
-        <h2 className="text-2xl font-bold">あなたにおすすめ</h2>
-        <div className="flex gap-10 overflow-x-auto w-full py-4 [scrollbar-color:var(--color-void)_transparent]">
-          {recommendation.map((furniture) => (
-            <button
-              onClick={() => {
-                handleTransitionUpdate(furniture.id, furnitureId);
-                router.push(`/furniture/${furniture.id}`)
-              }}
-              key={furniture.id}
-              className="flex flex-col flex-shrink-0 gap-1"
-            >
-              <Image
-                className="w-52 h-52 rounded-2xl hover:brightness-75 transition-all ease-out duration-700"
-                src={furniture.imageUrl}
-                alt={furniture.name}
-                width={200}
-                height={200}
-              />
-              <p className="text-left truncate max-w-52">{furniture.name}</p>
-              <p className="text-left truncate max-w-52">
-                {furniture.price.toLocaleString("ja-JP", {
-                  style: "currency",
-                  currency: "JPY",
-                })}
-              </p>
-            </button>
-          ))}
+      {recommendation.length > 0 && (
+        <div className="pt-20">
+          <h2 className="text-2xl font-bold">あなたにおすすめ</h2>
+          <div className="flex gap-10 overflow-x-auto w-full py-4 [scrollbar-color:var(--color-void)_transparent]">
+            {recommendation.map((furniture) => (
+              <button
+                onClick={() => {
+                  handleTransitionUpdate(furniture.id, furnitureId);
+                  router.push(`/furniture/${furniture.id}`);
+                }}
+                key={furniture.id}
+                className="flex flex-col flex-shrink-0 gap-1"
+              >
+                <Image
+                  className="w-52 h-52 rounded-2xl hover:brightness-75 transition-all ease-out duration-700"
+                  src={furniture.imageUrl}
+                  alt={furniture.name}
+                  width={200}
+                  height={200}
+                />
+                <p className="text-left truncate max-w-52">{furniture.name}</p>
+                <p className="text-left truncate max-w-52">
+                  {furniture.price.toLocaleString("ja-JP", {
+                    style: "currency",
+                    currency: "JPY",
+                  })}
+                </p>
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }
