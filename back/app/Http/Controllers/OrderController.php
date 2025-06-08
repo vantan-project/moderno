@@ -6,7 +6,6 @@ use App\Http\Requests\OrderStoreRequest;
 use App\Models\Furniture;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
@@ -112,14 +111,16 @@ class OrderController extends Controller
         $authUser = request()->user();
         $order = $authUser->orders()->find($id);
 
-        if ($order->is_completed) {
+        if ($order->is_shopped) {
             return response()->json([
                 'success' => false,
                 'messages' => ['発送後のため注文をキャンセルできません。'],
             ]);
         }
 
+        $order->furniture->increment('stock', $order->count);
         $order->delete();
+
         return response()->json([
             'success' => true,
             'messages' => ['注文をキャンセルしました。'],
