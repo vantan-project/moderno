@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Request;
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthSignUpLoginRequest;
 use Illuminate\Support\Facades\Auth;
@@ -15,12 +16,12 @@ class AuthController extends Controller
         $auth = $request["auth"];
 
         if (Auth::attempt(['email' => $auth['email'], 'password' => $auth['password']])) {
-            $user = Auth::user();
+            $authUser = request()->user();
 
             return response()->json([
                 'success' => true,
                 'messages' => ['ログインに成功しました。'],
-                'authToken' => $user->createToken('authToken')->plainTextToken,
+                'authToken' => $authUser->createToken('authToken')->plainTextToken,
             ]);
         }
 
@@ -44,5 +45,29 @@ class AuthController extends Controller
             'messages' => ['ユーザー登録が完了しました。'],
             'authToken' => $user->createToken('authToken')->plainTextToken,
         ], 201);
+    }
+
+    public function logout(Request $request)
+    {
+        $authUser = $request->user();
+
+        $authUser->currentAccessToken()->delete();
+
+        return response()->json([
+            'success' => true,
+            'messages' => ['ログアウトしました。'],
+        ]);
+    }
+
+    public function destroy(Request $request)
+    {
+        $authUser = $request->user();
+
+        $authUser->delete();
+
+        return response()->json([
+            'success' => true,
+            'messages' => ['ユーザーアカウントを削除しました。'],
+        ]);
     }
 }

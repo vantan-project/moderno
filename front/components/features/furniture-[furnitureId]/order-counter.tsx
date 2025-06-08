@@ -3,11 +3,12 @@ import { Order } from "../../../app/furniture/[furnitureId]/page";
 import { AddIcon } from "@/components/shared/icons/add-icon";
 
 type Props = {
-    order: Order,
-    setOrder: React.Dispatch<React.SetStateAction<Order>>;
-}
+  order: Order;
+  setOrder: React.Dispatch<React.SetStateAction<Order>>;
+  stock: number;
+};
 
-export function OrderCounter({ order, setOrder }: Props) {
+export function OrderCounter({ order, setOrder, stock }: Props) {
   return (
     <div className="flex w-full items-center justify-between rounded-2xl overflow-hidden outline-2 outline-gray bg-gray">
       <button
@@ -27,7 +28,7 @@ export function OrderCounter({ order, setOrder }: Props) {
       <button
         className="p-1 h-full cursor-pointer"
         onClick={() => {
-          if (order.count >= 99) {
+          if (order.count >= stock) {
             return;
           }
           setOrder({ ...order, count: order.count + 1 });

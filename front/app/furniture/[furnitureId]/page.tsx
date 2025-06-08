@@ -91,7 +91,7 @@ export default function Page() {
               <span className="text-xs">（税込）</span>
             </h3>
             <div className="grid grid-cols-[35%_65%] grid-rows-[42px_42px] gap-5">
-              <OrderCounter order={order} setOrder={setOrder} />
+              <OrderCounter order={order} setOrder={setOrder} stock={furniture.stock} />
               <ButtonWithIcon icon={<CartIcon />}>
                 カートに入れる
               </ButtonWithIcon>

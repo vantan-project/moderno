@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 
 class Furniture extends Model
 {
+    protected $table = 'furnitures';
     protected $fillable = ['name','image_url','detail','price','category_id','stock'];
 
     function category() {
