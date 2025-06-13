@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 
 class Furniture extends Model
 {
+    protected $table = 'furnitures';
     protected $fillable = ['name','image_url','detail','price','category_id','stock'];
 
     function category() {
@@ -15,6 +16,11 @@ class Furniture extends Model
 
     function orders() {
         return $this->hasMany(Order::class);
+    }
+
+    public function transitionsFrom()
+    {
+        return $this->hasMany(Transition::class, 'from_furniture_id');
     }
 
     public static function uploadS3($imageFile) {

@@ -11,21 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('furniture_id');
+        Schema::create('transitions', function (Blueprint $table) {
+            $table->unsignedBigInteger('from_furniture_id');
+            $table->unsignedBigInteger('to_furniture_id');
             $table->unsignedInteger('count');
-            $table->boolean('is_shipped')->default(false);
-            $table->boolean('is_completed');
             $table->timestamps();
 
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
+            $table->primary(['from_furniture_id','to_furniture_id']);
 
-            $table->foreign('furniture_id')
+            $table->foreign('from_furniture_id')
+                ->references('id')
+                ->on('furnitures')
+                ->onDelete('cascade');
+            $table->foreign('to_furniture_id')
                 ->references('id')
                 ->on('furnitures')
                 ->onDelete('cascade');
@@ -37,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('transitions');
     }
 };

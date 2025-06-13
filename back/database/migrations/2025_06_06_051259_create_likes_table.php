@@ -11,20 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->id();
+        Schema::create('likes', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('furniture_id');
-            $table->unsignedInteger('count');
-            $table->boolean('is_shipped')->default(false);
-            $table->boolean('is_completed');
             $table->timestamps();
+
+            $table->primary(['user_id','furniture_id']);
 
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
-
             $table->foreign('furniture_id')
                 ->references('id')
                 ->on('furnitures')
@@ -37,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('likes');
     }
 };

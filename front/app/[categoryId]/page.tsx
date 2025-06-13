@@ -28,12 +28,16 @@ export default function Page() {
   >([]);
 
   useEffect(() => {
-    const indexApi = async () => {
-      const indexResponse = await FurnitureIndex({ search });
-      setFurnitures(indexResponse.furnitures);
-    };
+    const timer = setTimeout(() => {
+      const indexApi = async () => {
+        const indexResponse = await FurnitureIndex({ search });
+        setFurnitures(indexResponse.furnitures);
+      };
 
-    indexApi();
+      indexApi();
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, [search]);
 
   return (
@@ -62,7 +66,12 @@ export default function Page() {
                 />
               </div>
               <p>{furniture.name}</p>
-              <p className="text-2xl font-bold">￥{furniture.price}</p>
+              <p className="text-2xl font-bold">
+                {furniture.price.toLocaleString("ja-JP", {
+                  style: "currency",
+                  currency: "JPY",
+                })}
+              </p>
             </Link>
 
             <div className="flex gap-12">

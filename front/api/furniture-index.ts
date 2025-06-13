@@ -9,6 +9,7 @@ export type FurnitureIndexRequest = {
 };
 
 export type FurnitureIndexResponse = {
+  success: boolean;
   furnitures: {
     id: number;
     name: string;
@@ -18,6 +19,7 @@ export type FurnitureIndexResponse = {
     categoryId: number;
     stock: number;
   }[];
+  lastPage: number;
 };
 
 export async function FurnitureIndex({
