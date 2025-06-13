@@ -78,7 +78,7 @@ export default function Page() {
 
         <article className="h-full [&>*:not(:last-child)]:border-b [&>*]:py-4 [&>*]:px-2">
           <header className="font-bold">{furniture.name}</header>
-          <section className="h-64 max-h-64 overflow-y-auto py-2">
+          <section className="h-64 max-h-64 overflow-y-auto py-2 whitespace-pre-wrap">
             {furniture.detail}
           </section>
 

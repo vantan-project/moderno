@@ -40,14 +40,17 @@ export default function FurnitureForm() {
     >
       <label>商品名</label>
       <input
-        {...register("furniture.name", { required: "商品名は必須です" })}
+        {...register("furniture.name")}
       />
 
       <label>画像</label>
       <input type="file" {...register("furniture.imageFile")} />
 
       <label>詳細</label>
-      <textarea className="border p-2 mb-8" {...register("furniture.detail")} />
+      <textarea
+        className="border p-2 mb-8 h-96"
+        {...register("furniture.detail")}
+      />
 
       <label>価格</label>
       <input type="number" {...register("furniture.price")} />
