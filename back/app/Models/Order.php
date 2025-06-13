@@ -10,5 +10,11 @@ class Order extends Model
         'user_id',
         'furniture_id',
         'count',
+        'is_shipped',
+        'is_completed',
     ];
+
+    public function furniture() {
+        return $this->belongsTo(Furniture::class);
+    }
 }

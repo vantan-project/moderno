@@ -17,6 +17,15 @@ return new class extends Migration
             $table->timestamps();
 
             $table->primary(['user_id','furniture_id']);
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+            $table->foreign('furniture_id')
+                ->references('id')
+                ->on('furnitures')
+                ->onDelete('cascade');
         });
     }
 

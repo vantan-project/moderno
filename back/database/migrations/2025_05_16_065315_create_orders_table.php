@@ -16,6 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('furniture_id');
             $table->unsignedInteger('count');
+            $table->boolean('is_shipped')->default(false);
+            $table->boolean('is_completed');
             $table->timestamps();
 
             $table->foreign('user_id')
@@ -25,7 +27,7 @@ return new class extends Migration
 
             $table->foreign('furniture_id')
                 ->references('id')
-                ->on('furniture')
+                ->on('furnitures')
                 ->onDelete('cascade');
         });
     }

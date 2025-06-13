@@ -66,7 +66,12 @@ export default function Page() {
                 />
               </div>
               <p>{furniture.name}</p>
-              <p className="text-2xl font-bold">￥{furniture.price}</p>
+              <p className="text-2xl font-bold">
+                {furniture.price.toLocaleString("ja-JP", {
+                  style: "currency",
+                  currency: "JPY",
+                })}
+              </p>
             </Link>
 
             <div className="flex gap-12">
