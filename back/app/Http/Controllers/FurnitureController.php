@@ -141,6 +141,21 @@ class FurnitureController extends Controller
         ]);
     }
 
+    public function newArrival() {
+        $furnitures = Furniture::orderBy('created_at', 'desc')
+            ->take(10)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'furnitures' => $furnitures->map(function ($furniture) {
+                return [
+                    'id' => $furniture->id,
+                    'name' => $furniture->name,
+                    'imageUrl' => $furniture->image_url,
+                ];
+            })
+
     public function recommendation($id) {
         $RECOMMENDATION_LIMIT = 10;
         $furniture = Furniture::find($id);
