@@ -155,6 +155,8 @@ class FurnitureController extends Controller
                     'imageUrl' => $furniture->image_url,
                 ];
             })
+        ]);
+    }
 
     public function recommendation($id) {
         $RECOMMENDATION_LIMIT = 10;

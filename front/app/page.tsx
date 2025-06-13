@@ -39,6 +39,10 @@ export default function Page() {
   const sectionTitleClassName = "border-b pl-2 pb-2 mx-4";
   const scrollableClassName =
     "flex gap-10 overflow-x-auto w-full py-4 [scrollbar-color:var(--color-void)_transparent]";
+  const linkClassName = "rounded-2xl flex-shrink-0 overflow-hidden";
+  const imageClassName =
+    "w-52 h-52 hover:brightness-75 transition-all ease-out duration-700";
+
   return (
     <div className="px-12 flex flex-col gap-20">
       <FirstView />
@@ -53,13 +57,13 @@ export default function Page() {
             {weeklyRankings.map((furniture, index) => (
               <Link
                 href={`/furniture/${furniture.id}`}
-                className="rounded-2xl flex-shrink-0 overflow-hidden"
+                className={linkClassName}
                 key={furniture.id}
               >
                 <div className="relative">
                   <RankingLabel ranking={index + 1} />
                   <Image
-                    className="w-52 h-52 hover:brightness-75 transition-all ease-out duration-700"
+                    className={imageClassName}
                     src={furniture.imageUrl}
                     alt={furniture.name}
                     width={200}
@@ -76,6 +80,24 @@ export default function Page() {
         <section>
           <div className={sectionTitleClassName}>
             <TextWithLabel text="NEW ARRIVALS" label="新着商品" />
+          </div>
+
+          <div className={scrollableClassName}>
+            {newArrivals.map((furniture) => (
+              <Link
+                href={`/furniture/${furniture.id}`}
+                className={linkClassName}
+                key={furniture.id}
+              >
+                <Image
+                  className={imageClassName}
+                  src={furniture.imageUrl}
+                  alt={furniture.name}
+                  width={200}
+                  height={200}
+                />
+              </Link>
+            ))}
           </div>
         </section>
       )}
