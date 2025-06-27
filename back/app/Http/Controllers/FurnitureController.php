@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\FurnitureStoreRequest;
 use App\Http\Requests\FurnitureUpdateRequest;
 use App\Models\Furniture;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -197,6 +198,27 @@ class FurnitureController extends Controller
         return response()->json([
             'success' => true,
             'furnitures' => $topFurnitures->concat($addFurnitures)->values(),
+        ]);
+    }
+
+    public function like(){
+        
+        $authUser = request()->user();
+
+        $furnitures = User::find($authUser->id)
+            ->likeFurnitures
+            ->sortByDesc('created_at')
+            ->map(function($furniture) {
+                return [
+                    'id' => $furniture->id,
+                    'name' => $furniture->name,
+                    'imageUrl' => $furniture->image_url,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'furnitures' => $furnitures,
         ]);
     }
 }
