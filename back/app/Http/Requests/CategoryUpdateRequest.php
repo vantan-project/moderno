@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class LikeStoreRequest extends FormRequest
+class CategoryUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,15 +24,17 @@ class LikeStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'furnitureId'=>'required|integer|exists:furnitures,id'
+            'category.name' => 'required|string|max:255|regex:/[a-zA-Zぁ-んァ-ヶ一-龠]/',
         ];
     }
 
     public function messages(): array
     {
-        return [
-            'furnitureId.required' => '商品IDは必須です。',
-            'furnitureId.exists' => '選択された商品IDは存在しません。',
+        return[
+            'category.name.required' => 'カテゴリー名は必須です。',
+            'category.name.string' => 'カテゴリー名は文字列で入力してください。',
+            'category.name.max' => 'カテゴリー名は255文字以内で入力してください。',
+            'category.name.regex' => 'カテゴリー名は文字列で入力してください。',
         ];
     }
 
