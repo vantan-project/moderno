@@ -20,4 +20,41 @@ class CategoryController extends Controller
             })
         ]);
     }
+
+    public function store(Request $request){
+        $input = $request["category"];
+
+        Category::create([
+            'name' => $input['name'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'messages' => ['カテゴリーを登録しました。'],
+        ]);
+    }
+
+    public function update(Request $request, int $id){
+        $input = $request["category"];
+
+        $category = Category::findOrFail($id);
+
+        $category->name = $input['name'];
+        $category->save();
+
+        return response()->json([
+            'success' => true,
+            'messages' => ['カテゴリーを更新しました。'],
+        ]);
+    }
+
+    public function destroy(int $id){
+        $category = Category::findOrFail($id);
+        $category -> delete();
+
+        return response()->json([
+            'success' => true,
+            'messages' => ['カテゴリーを削除しました。'],
+        ]);
+    }
 }

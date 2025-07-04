@@ -1,14 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Like;
 
+use App\Models\Like;
 use Illuminate\Http\Request;
+use App\Http\Requests\LikeStoreRequest;
+
 
 
 class LikeController extends Controller
 {
-    public function store(Request $request){
+    public function store(LikeStoreRequest $request){
         $authUser = request()->user();
 
         Like::create([

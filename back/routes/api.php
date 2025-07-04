@@ -33,7 +33,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [LikeController::class, 'store']);
         Route::delete('/{furnitureId}', [LikeController::class, 'destroy']);
     });
-
 });
 
 Route::prefix('furniture')->group(function () {
@@ -46,6 +45,9 @@ Route::prefix('furniture')->group(function () {
 
 Route::prefix('category')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);
+    Route::post('/', [CategoryController::class, 'store']);
+    Route::patch('/{id}', [CategoryController::class, 'update']);
+    Route::delete('/{id}', [CategoryController::class, 'destroy']);
 });
 
 Route::prefix('transition')->group(function () {
