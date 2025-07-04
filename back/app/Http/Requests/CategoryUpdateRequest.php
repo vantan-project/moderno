@@ -24,14 +24,13 @@ class CategoryUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category.name' => 'required|string|max:255|regex:/[a-zA-Zぁ-んァ-ヶ一-龠]/',
+            'category.name' => 'string|max:255|regex:/[a-zA-Zぁ-んァ-ヶ一-龠]/',
         ];
     }
 
     public function messages(): array
     {
         return[
-            'category.name.required' => 'カテゴリー名は必須です。',
             'category.name.string' => 'カテゴリー名は文字列で入力してください。',
             'category.name.max' => 'カテゴリー名は255文字以内で入力してください。',
             'category.name.regex' => 'カテゴリー名は文字列で入力してください。',
