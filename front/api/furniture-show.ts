@@ -16,7 +16,7 @@ export type FurnitureShowResponse = {
   };
 };
 
-export function FurnitureShow({
+export function furnitureShow({
   furnitureId,
 }: FurnitureShowRequest): Promise<FurnitureShowResponse> {
   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/furniture/${furnitureId}`;

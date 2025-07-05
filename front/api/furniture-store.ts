@@ -17,7 +17,7 @@ export type FurnitureStoreResponse = {
   messages: string[];
 };
 
-export async function useFurnitureStore({
+export async function furnitureStore({
   furniture,
 }: FurnitureStoreRequest): Promise<FurnitureStoreResponse> {
   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/furniture`;

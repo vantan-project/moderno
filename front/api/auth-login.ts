@@ -13,7 +13,7 @@ export type AuthLoginResponse = {
   authToken: string;
 };
 
-export async function AuthLogin({
+export async function authLogin({
   auth,
 }: AuthLoginRequest): Promise<AuthLoginResponse> {
   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;

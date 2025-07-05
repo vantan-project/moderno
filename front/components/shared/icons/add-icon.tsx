@@ -1,6 +1,11 @@
-export function AddIcon() {
+type Props = {
+  className?: string;
+};
+
+export function AddIcon({ className }: Props) {
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height="24px"
       viewBox="0 -960 960 960"

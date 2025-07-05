@@ -12,7 +12,7 @@ export type OrderStoreResponse = {
   messages: string[];
 };
 
-export async function OrderStore({ orders }: OrderStoreResquest) {
+export async function orderStore({ orders }: OrderStoreResquest) {
   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/order`;
 
   return await axios

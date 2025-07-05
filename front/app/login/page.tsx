@@ -1,26 +1,24 @@
 "use client";
 
-import { AuthLogin, AuthLoginRequest } from "@/api/auth-login";
+import { authLogin, AuthLoginRequest } from "@/api/auth-login";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
+import { showToast } from "@/utils/show-toast";
 
 export default function Page() {
   const router = useRouter();
-  const {
-    register,
-    handleSubmit,
-  } = useForm<AuthLoginRequest>();
+  const { register, handleSubmit } = useForm<AuthLoginRequest>();
 
   const onSubmit = async (data: AuthLoginRequest) => {
-    const loginResponse = await AuthLogin(data);
+    const loginResponse = await authLogin(data);
 
     if (loginResponse.success) {
       Cookies.set("authToken", loginResponse.authToken, { expires: 7 });
       router.push("/admin");
-    } else {
-      alert("ログインに失敗しました");
     }
+
+    await showToast(loginResponse.success, loginResponse.messages);
   };
 
   return (

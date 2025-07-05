@@ -3,10 +3,11 @@
 import { useForm } from "react-hook-form";
 import {
   FurnitureStoreRequest,
-  useFurnitureStore,
+  furnitureStore,
 } from "@/api/furniture-store";
 import { useEffect, useState } from "react";
 import { categoryIndex, CategoryIndexResponse } from "@/api/category-index";
+import { showToast } from "@/utils/show-toast";
 
 export default function FurnitureForm() {
   const [categories, setCategories] = useState<
@@ -15,13 +16,12 @@ export default function FurnitureForm() {
   const { register, handleSubmit, reset } = useForm<FurnitureStoreRequest>();
 
   const onSubmit = async (data: FurnitureStoreRequest) => {
-    const res = await useFurnitureStore(data);
+    const res = await furnitureStore(data);
     if (res.success) {
       reset();
     }
-    for (const message of res.messages) {
-      alert(message);
-    }
+
+    await showToast(res.success, res.messages);
   };
 
   useEffect(() => {

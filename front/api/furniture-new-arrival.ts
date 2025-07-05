@@ -9,7 +9,7 @@ export type FurnitureNewArrivalResponse = {
   }[];
 };
 
-export async function FurnitureNewArrival() {
+export async function furnitureNewArrival() {
   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/furniture/new-arrival`;
 
   return await axios

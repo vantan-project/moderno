@@ -1,12 +1,13 @@
 "use client";
 
 import {
-  FurnitureIndex,
+  furnitureIndex,
   FurnitureIndexRequest,
   FurnitureIndexResponse,
 } from "@/api/furniture-index";
 import { ButtonWithLabel } from "@/components/shared/button-with-label";
 import { CartIcon } from "@/components/shared/icons/cart-icon";
+import { EditIcon } from "@/components/shared/icons/edit-icon";
 import { HeartIcon } from "@/components/shared/icons/heart-icon";
 import { Search } from "@/components/shared/search";
 import Image from "next/image";
@@ -26,11 +27,13 @@ export default function Page() {
   const [furnitures, setFurnitures] = useState<
     FurnitureIndexResponse["furnitures"]
   >([]);
+  // TODO: 管理者かどうかを判別する
+  const isAdmin = true;
 
   useEffect(() => {
     const timer = setTimeout(() => {
       const indexApi = async () => {
-        const indexResponse = await FurnitureIndex({ search });
+        const indexResponse = await furnitureIndex({ search });
         setFurnitures(indexResponse.furnitures);
       };
 
@@ -76,11 +79,16 @@ export default function Page() {
 
             <div className="flex gap-12">
               <ButtonWithLabel onClick={() => {}} label="お気に入り">
-                <HeartIcon className="w-10 h-10" />
+                <HeartIcon className="w-10 h-10 hover:opacity-30" />
               </ButtonWithLabel>
               <ButtonWithLabel onClick={() => {}} label="カート">
-                <CartIcon className="w-10 h-10" />
+                <CartIcon className="w-10 h-10 hover:opacity-30" />
               </ButtonWithLabel>
+              {isAdmin && (
+                <ButtonWithLabel onClick={() => {}} label="編集する">
+                  <EditIcon className="w-10 h-10 hover:opacity-30" />
+                </ButtonWithLabel>
+              )}
             </div>
           </div>
         ))}

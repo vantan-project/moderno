@@ -9,7 +9,7 @@ export type FurnitureWeeklyRankingResponse = {
   }[];
 };
 
-export async function FurnitureWeeklyRanking(): Promise<FurnitureWeeklyRankingResponse> {
+export async function furnitureWeeklyRanking(): Promise<FurnitureWeeklyRankingResponse> {
   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/furniture/weekly-ranking`;
 
   return await axios

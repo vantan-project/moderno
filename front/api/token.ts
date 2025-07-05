@@ -5,7 +5,7 @@ type TokenResponse = {
   success: boolean;
 };
 
-export async function Token() {
+export async function token() {
   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/token`;
   const authToken = Cookies.get("authToken");
 

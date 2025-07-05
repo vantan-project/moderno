@@ -5,7 +5,7 @@ export type TransitionUpdateRequest = {
   fromFurnitureId: number;
 };
 
-export async function TransitionUpdate({
+export async function transitionUpdate({
   toFurnitureId,
   fromFurnitureId,
 }: TransitionUpdateRequest) {
