@@ -29,14 +29,16 @@ export function SideHeader() {
       </Link>
 
       <nav className="flex flex-col w-full gap-4 font-bold relative">
-        <div className="absolute -top-10 right-0 text-void flex gap-1">
-          <Link href="/category/edit" className="bg-core p-1 rounded-lg">
-            <EditIcon className="w-6 h-6 hover:opacity-30" />
-          </Link>
-          <button className="bg-core p-1 rounded-lg">
-            <AddIcon className="w-6 h-6 hover:opacity-30" />
-          </button>
-        </div>
+        {isAdmin && (
+          <div className="absolute -top-10 right-0 text-void flex gap-1">
+            <Link href="/category/edit" className="bg-core p-1 rounded-lg">
+              <EditIcon className="w-6 h-6 hover:opacity-30" />
+            </Link>
+            <button className="bg-core p-1 rounded-lg">
+              <AddIcon className="w-6 h-6 hover:opacity-30" />
+            </button>
+          </div>
+        )}
 
         {categories.map((category) => (
           <Link

@@ -41,7 +41,7 @@ export function FixedWrapper({ children }: Props) {
           </div>
         </>
       )}
-      <div className={allTrue ? "pl-64 py-28" : ""}>{children}</div>
+      <div className={allTrue ? "pl-64 py-24" : ""}>{children}</div>
     </>
   );
 }
