@@ -16,6 +16,7 @@ import {
 import { transitionUpdate } from "@/api/transition-update";
 import { EditIcon } from "@/components/shared/icons/edit-icon";
 import Link from "next/link";
+import Cookies from "js-cookie";
 
 export type Order = {
   furnitureId: number;
@@ -36,8 +37,7 @@ export default function Page() {
     furnitureId: furnitureId,
     count: 1,
   });
-  // TODO: 管理者かどうかを判別する
-  const isAdmin = true;
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const showApi = async () => {
@@ -53,6 +53,10 @@ export default function Page() {
     showApi();
     recommendationApi();
   }, [furnitureId]);
+
+  useEffect(() => {
+    setIsAdmin(!!Number(Cookies.get("isAdmin")));
+  }, [isAdmin]);
 
   const handleTransitionUpdate = async (
     toFurnitureId: number,
@@ -143,13 +147,15 @@ export default function Page() {
         </div>
       )}
 
-      <Link
-        className="fixed bottom-14 right-14 text-void border-3 border-void rounded-full py-4 px-12 bg-core flex items-center gap-4"
-        href={`/furniture/${furnitureId}/edit`}
-      >
-        <EditIcon className="w-8 h-8" />
-        <p className="text-xl">編集</p>
-      </Link>
+      {isAdmin && (
+        <Link
+          className="fixed bottom-14 right-14 text-void border-3 border-void rounded-full py-4 px-12 bg-core flex items-center gap-4"
+          href={`/furniture/${furnitureId}/edit`}
+        >
+          <EditIcon className="w-8 h-8" />
+          <p className="text-xl">編集</p>
+        </Link>
+      )}
     </section>
   );
 }

@@ -5,13 +5,13 @@ import { LogoIcon } from "@/components/shared/icons/logo-icon";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 export function SideHeader() {
   const [categories, setCategories] = useState<
     CategoryIndexResponse["categories"]
   >([]);
-  // TODO: 管理者かどうかを判別する
-  const isAdmin = true;
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const indexApi = async () => {
@@ -21,6 +21,10 @@ export function SideHeader() {
 
     indexApi();
   }, []);
+
+  useEffect(() => {
+    setIsAdmin(!!Number(Cookies.get("isAdmin")));
+  }, [isAdmin]);
 
   return (
     <header className="flex flex-col items-center w-64 h-screen p-4 gap-8 bg-void rounded-tr-4xl">

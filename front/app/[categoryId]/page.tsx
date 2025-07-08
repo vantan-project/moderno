@@ -14,6 +14,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 export default function Page() {
   const params = useParams();
@@ -27,8 +28,7 @@ export default function Page() {
   const [furnitures, setFurnitures] = useState<
     FurnitureIndexResponse["furnitures"]
   >([]);
-  // TODO: 管理者かどうかを判別する
-  const isAdmin = true;
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -42,6 +42,10 @@ export default function Page() {
 
     return () => clearTimeout(timer);
   }, [search]);
+
+  useEffect(() => {
+    setIsAdmin(!!Number(Cookies.get("isAdmin")));
+  }, [isAdmin]);
 
   return (
     <div>

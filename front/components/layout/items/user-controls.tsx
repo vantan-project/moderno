@@ -14,7 +14,7 @@ export function UserControls({ isLoggedIn }: Props) {
   const iconClassName = "w-10 h-10 hover:opacity-30";
 
   return (
-    <div className="flex items-center gap-5 bg-core text-void rounded-2xl py-2 px-5 border-3 border-void [&>*]:w-16">
+    <div className="flex items-center gap-5 bg-core text-void rounded-2xl py-2 px-5 border-2 border-void [&>*]:w-16">
       <ButtonWithLabel onClick={() => {}} label="お気に入り">
         <HeartIcon className={iconClassName} />
       </ButtonWithLabel>
