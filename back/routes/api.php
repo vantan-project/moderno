@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('like')->group(function () {
+        Route::get('/', [LikeController::class, 'index']);
         Route::post('/', [LikeController::class, 'store']);
         Route::delete('/{furnitureId}', [LikeController::class, 'destroy']);
     });
