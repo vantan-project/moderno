@@ -18,6 +18,10 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('is_admin')->default(false);
+            $table->string('postal_code')->nullable();
+            $table->string('prefecture')->nullable();
+            $table->string('city')->nullable();
+            $table->string('street_address')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
