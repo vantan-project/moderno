@@ -199,4 +199,25 @@ class FurnitureController extends Controller
             'furnitures' => $topFurnitures->concat($addFurnitures)->values(),
         ]);
     }
+
+    public function like(){
+        
+        $authUser = request()->user();
+
+        $furnitures = $authUser
+            ->likeFurnitures
+            ->sortByDesc('created_at')
+            ->map(function($furniture) {
+                return [
+                    'id' => $furniture->id,
+                    'name' => $furniture->name,
+                    'imageUrl' => $furniture->image_url,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'furnitures' => $furnitures,
+        ]);
+    }
 }

@@ -6,7 +6,7 @@ use App\Models\Transition;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class TransitionControler extends Controller
+class TransitionController extends Controller
 {
     public function update(Request $request)
     {
