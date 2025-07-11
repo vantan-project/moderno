@@ -1,6 +1,6 @@
 "use client";
 
-import { FurnitureShow, FurnitureShowResponse } from "@/api/furniture-show";
+import { furnitureShow, FurnitureShowResponse } from "@/api/furniture-show";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,10 +10,13 @@ import { CartIcon } from "@/components/shared/icons/cart-icon";
 import { HeartIcon } from "@/components/shared/icons/heart-icon";
 import { BagIcon } from "@/components/shared/icons/bag-icon";
 import {
-  FurnitureRecommendation,
+  furnitureRecommendation,
   FurnitureRecommendationResponse,
 } from "@/api/furniture-recommendation";
-import { TransitionUpdate } from "@/api/transition-update";
+import { transitionUpdate } from "@/api/transition-update";
+import { EditIcon } from "@/components/shared/icons/edit-icon";
+import Link from "next/link";
+import Cookies from "js-cookie";
 
 export type Order = {
   furnitureId: number;
@@ -34,15 +37,16 @@ export default function Page() {
     furnitureId: furnitureId,
     count: 1,
   });
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const showApi = async () => {
-      const showResponse = await FurnitureShow({ furnitureId });
+      const showResponse = await furnitureShow({ furnitureId });
       setFurniture(showResponse.furniture);
     };
 
     const recommendationApi = async () => {
-      const recommendationResponse = await FurnitureRecommendation(furnitureId);
+      const recommendationResponse = await furnitureRecommendation(furnitureId);
       setRecommendation(recommendationResponse.furnitures);
     };
 
@@ -50,11 +54,15 @@ export default function Page() {
     recommendationApi();
   }, [furnitureId]);
 
+  useEffect(() => {
+    setIsAdmin(!!Number(Cookies.get("isAdmin")));
+  }, [isAdmin]);
+
   const handleTransitionUpdate = async (
     toFurnitureId: number,
     fromFurnitureId: number
   ) => {
-    await TransitionUpdate({
+    await transitionUpdate({
       toFurnitureId,
       fromFurnitureId,
     });
@@ -78,7 +86,7 @@ export default function Page() {
 
         <article className="h-full [&>*:not(:last-child)]:border-b [&>*]:py-4 [&>*]:px-2">
           <header className="font-bold">{furniture.name}</header>
-          <section className="h-64 max-h-64 overflow-y-auto py-2">
+          <section className="h-64 max-h-64 overflow-y-auto py-2 whitespace-pre-wrap [&::-webkit-scrollbar]:hidden">
             {furniture.detail}
           </section>
 
@@ -137,6 +145,16 @@ export default function Page() {
             ))}
           </div>
         </div>
+      )}
+
+      {isAdmin && (
+        <Link
+          className="fixed bottom-14 right-14 text-void border-3 border-void rounded-full py-4 px-12 bg-core flex items-center gap-4"
+          href={`/furniture/${furnitureId}/edit`}
+        >
+          <EditIcon className="w-8 h-8" />
+          <p className="text-xl">編集</p>
+        </Link>
       )}
     </section>
   );

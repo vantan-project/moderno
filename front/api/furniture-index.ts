@@ -22,7 +22,7 @@ export type FurnitureIndexResponse = {
   lastPage: number;
 };
 
-export async function FurnitureIndex({
+export async function furnitureIndex({
   search,
 }: FurnitureIndexRequest): Promise<FurnitureIndexResponse> {
   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/furniture`;

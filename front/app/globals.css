@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "@mantine/core/styles.layer.css";
+@import "@mantine/notifications/styles.css";
 
 @theme {
   --color-core: white;
@@ -8,4 +10,9 @@
 
 body::-webkit-scrollbar {
   display: none;
+  color: var(--color-void);
+}
+
+input {
+  outline: none;
 }

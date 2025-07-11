@@ -4,15 +4,16 @@ import { TextWithLabel } from "@/components/features/text-with-label";
 import { FirstView } from "../components/features/first-view";
 import { useEffect, useState } from "react";
 import {
-  FurnitureWeeklyRanking,
+  furnitureWeeklyRanking,
   FurnitureWeeklyRankingResponse,
 } from "@/api/furniture-weekly-ranking";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  FurnitureNewArrival,
+  furnitureNewArrival,
   FurnitureNewArrivalResponse,
 } from "@/api/furniture-new-arrival";
+import Cookies from "js-cookie";
 
 export default function Page() {
   const [weeklyRankings, setWeeklyRankings] = useState<
@@ -24,11 +25,11 @@ export default function Page() {
 
   useEffect(() => {
     const weeklyRankingApi = async () => {
-      const res = await FurnitureWeeklyRanking();
+      const res = await furnitureWeeklyRanking();
       setWeeklyRankings(res.furnitures);
     };
     const newArrivalApi = async () => {
-      const res = await FurnitureNewArrival();
+      const res = await furnitureNewArrival();
       setNewArrivals(res.furnitures);
     };
 

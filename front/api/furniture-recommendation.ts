@@ -10,7 +10,7 @@ export type FurnitureRecommendationResponse = {
   }[];
 };
 
-export async function FurnitureRecommendation(
+export async function furnitureRecommendation(
   furnitureId: number
 ): Promise<FurnitureRecommendationResponse> {
   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/furniture/recommendation/${furnitureId}`;

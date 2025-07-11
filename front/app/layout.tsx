@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { FixedWrapper } from "../components/features/fixed-wrapper";
+import { FixedWrapper } from "@/components/layout/fixed-wrapper";
+import { MantineProvider } from '@mantine/core';
+import { Notifications } from "@mantine/notifications";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +30,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <FixedWrapper>{children}</FixedWrapper>
+        <MantineProvider>
+          <FixedWrapper>{children}</FixedWrapper>
+          <Notifications position="bottom-right" />
+        </MantineProvider>
       </body>
     </html>
   );

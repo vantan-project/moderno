@@ -3,10 +3,11 @@
 import { useForm } from "react-hook-form";
 import {
   FurnitureStoreRequest,
-  useFurnitureStore,
+  furnitureStore,
 } from "@/api/furniture-store";
 import { useEffect, useState } from "react";
 import { categoryIndex, CategoryIndexResponse } from "@/api/category-index";
+import { showToast } from "@/utils/show-toast";
 
 export default function FurnitureForm() {
   const [categories, setCategories] = useState<
@@ -15,13 +16,12 @@ export default function FurnitureForm() {
   const { register, handleSubmit, reset } = useForm<FurnitureStoreRequest>();
 
   const onSubmit = async (data: FurnitureStoreRequest) => {
-    const res = await useFurnitureStore(data);
+    const res = await furnitureStore(data);
     if (res.success) {
       reset();
     }
-    for (const message of res.messages) {
-      alert(message);
-    }
+
+    await showToast(res.success, res.messages);
   };
 
   useEffect(() => {
@@ -40,14 +40,17 @@ export default function FurnitureForm() {
     >
       <label>商品名</label>
       <input
-        {...register("furniture.name", { required: "商品名は必須です" })}
+        {...register("furniture.name")}
       />
 
       <label>画像</label>
       <input type="file" {...register("furniture.imageFile")} />
 
       <label>詳細</label>
-      <textarea className="border p-2 mb-8" {...register("furniture.detail")} />
+      <textarea
+        className="border p-2 mb-8 h-96"
+        {...register("furniture.detail")}
+      />
 
       <label>価格</label>
       <input type="number" {...register("furniture.price")} />
