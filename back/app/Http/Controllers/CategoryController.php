@@ -41,7 +41,9 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail($id);
 
-        $category->name = $input['name'];
+        if(isset($input['name'])){
+            $category->name = $input['name'];
+        }
         $category->save();
 
         return response()->json([

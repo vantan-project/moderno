@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\FurnitureStoreRequest;
 use App\Http\Requests\FurnitureUpdateRequest;
 use App\Models\Furniture;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -205,7 +204,7 @@ class FurnitureController extends Controller
         
         $authUser = request()->user();
 
-        $furnitures = User::find($authUser->id)
+        $furnitures = $authUser
             ->likeFurnitures
             ->sortByDesc('created_at')
             ->map(function($furniture) {
