@@ -34,6 +34,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [LikeController::class, 'store']);
         Route::delete('/{furnitureId}', [LikeController::class, 'destroy']);
     });
+
+    Route::prefix('auth')->group(function () {
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::patch('/', [AuthController::class, 'update']);
+        Route::delete('/destroy', [AuthController::class, 'destroy']);
+    });
 });
 
 Route::prefix('furniture')->group(function () {
@@ -58,6 +64,4 @@ Route::prefix('transition')->group(function () {
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('/sign-up', [AuthController::class, 'signUp']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::delete('/destroy', [AuthController::class, 'destroy']);
 });
