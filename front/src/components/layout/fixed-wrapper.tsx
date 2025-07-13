@@ -6,6 +6,7 @@ import { token } from "@/api/token";
 import { SideHeader } from "./items/side-header";
 import { UserControls } from "./items/user-controls";
 import { GlobalContext } from "@/hooks/use-global-state";
+import { set } from "react-hook-form";
 
 type Props = {
   children: React.ReactNode;
@@ -18,6 +19,15 @@ export function FixedWrapper({ children }: Props) {
     !pathname.startsWith("/sign-up"),
   ].every((condition) => condition === true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const tokenApi = async () => {
+      const res = await token();
+      setIsLoggedIn(res.success);
+    };
+
+    tokenApi();
+  }, []);
 
   return (
     <GlobalContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
