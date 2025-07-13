@@ -1,40 +1,89 @@
 "use client";
 
 import { authLogin, AuthLoginRequest } from "@/api/auth-login";
-import { useRouter } from "next/navigation";
+import { LockIcon } from "@/components/shared/icons/lock-icon";
+import { MailIcon } from "@/components/shared/icons/mail-icon";
+import { MantinePasswordInput } from "@/components/shared/mantine/mantine-password-input";
+import { MantineTextInput } from "@/components/shared/mantine/mantine-text-input";
+import { showToast } from "@/utils/show-toast";
+import Image from "next/image";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
-import { showToast } from "@/utils/show-toast";
+import { useRouter } from "next/navigation";
 
-export default function Page() {
+export default function SignUpPage() {
   const router = useRouter();
-  const { register, handleSubmit } = useForm<AuthLoginRequest>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<AuthLoginRequest>();
 
   const onSubmit = async (data: AuthLoginRequest) => {
-    const loginResponse = await authLogin(data);
+    const res = await authLogin(data);
 
-    if (loginResponse.success) {
-      Cookies.set("authToken", loginResponse.authToken, { expires: 7 });
+    if (res.success) {
+      Cookies.set("authToken", res.authToken);
       router.push("/");
     }
 
-    await showToast(loginResponse.success, loginResponse.messages);
+    await showToast(res.success, res.messages);
   };
 
   return (
-    <form
-      className="flex flex-col w-[1000px] my-0 mx-auto p-8 [&_input]:border [&_input]:p-2 [&_input]:mb-8"
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <label>Email:</label>
-      <input {...register("auth.email")} type="email" />
+    <div className="flex justify-center items-center h-[calc(100vh-192px)]">
+      <Image
+        className="fixed top-0 left-0 w-full h-full"
+        src="/login.png"
+        alt="login"
+        width={1000}
+        height={1000}
+      />
 
-      <label>Password:</label>
-      <input {...register("auth.password")} type="password" />
+      <form
+        className="bg-[rgba(255,255,255,0.7)] backdrop-filter-[blur(8px)] rounded-xl flex flex-col w-[600px] py-12 px-24 gap-14"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <h1 className="text-2xl py-1 border-b-2 border-void text-center">
+          ログイン
+        </h1>
 
-      <button className="bg-gray p-2" type="submit">
-        Login
-      </button>
-    </form>
+        <div className="flex flex-col gap-5">
+          <MantineTextInput
+            label="メールアドレス"
+            placeholder="メールアドレス"
+            leftSection={<MailIcon className="w-5 h-5" />}
+            error={errors.auth?.email?.message}
+            {...register("auth.email", {
+              required: "メールアドレスは必須です",
+            })}
+          />
+          <MantinePasswordInput
+            label="パスワード"
+            placeholder="パスワード"
+            leftSection={<LockIcon className="w-5 h-5" />}
+            error={errors.auth?.email?.message}
+            {...register("auth.password", {
+              required: "パスワードは必須です",
+            })}
+          />
+        </div>
+
+        <div className="flex flex-col gap-8 w-full items-center">
+          <button
+            type="submit"
+            className="bg-void text-white w-60 py-2 rounded-full disabled:opacity-50"
+            disabled={isSubmitting}
+          >
+            ログイン
+          </button>
+
+          <Link href="/sign-up">
+            新規登録は<span className="underline hover:opacity-50">こちら</span>
+          </Link>
+        </div>
+      </form>
+    </div>
   );
 }

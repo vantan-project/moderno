@@ -12,12 +12,10 @@ type Props = {
 
 export function FixedWrapper({ children }: Props) {
   const pathname = usePathname();
-  const conditions: boolean[] = [
-    !pathname.startsWith("/admin"),
+  const showUserControls = [
     !pathname.startsWith("/login"),
     !pathname.startsWith("/sign-up"),
-  ];
-  const allTrue = conditions.every((condition) => condition === true);
+  ].every((condition) => condition === true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -33,17 +31,17 @@ export function FixedWrapper({ children }: Props) {
 
   return (
     <>
-      {allTrue && (
-        <>
-          <div className="fixed top-0 left-0 z-20">
-            <SideHeader />
-          </div>
-          <div className="fixed top-8 right-8 z-10">
-            <UserControls isLoggedIn={isLoggedIn} />
-          </div>
-        </>
+      <div className="fixed top-0 left-0 z-20">
+        <SideHeader />
+      </div>
+
+      {showUserControls && (
+        <div className="fixed top-8 right-8 z-10">
+          <UserControls isLoggedIn={isLoggedIn} />
+        </div>
       )}
-      <div className={allTrue ? "pl-64 py-24" : ""}>{children}</div>
+
+      <div className="pl-64 py-24">{children}</div>
     </>
   );
 }
