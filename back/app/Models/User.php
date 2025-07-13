@@ -57,6 +57,6 @@ class User extends Authenticatable
     }
 
     public function likeFurnitures(){
-        return $this->belongsToMany(Furniture::class, 'likes');
+        return $this->belongsToMany(Furniture::class, 'likes')->withTimestamps();
     }
 }
