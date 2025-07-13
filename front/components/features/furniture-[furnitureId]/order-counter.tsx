@@ -10,11 +10,11 @@ type Props = {
 
 export function OrderCounter({ order, setOrder, stock }: Props) {
   return (
-    <div className="flex w-full items-center justify-between rounded-2xl overflow-hidden outline-2 outline-gray bg-gray">
+    <div className="flex w-full items-center justify-between rounded-2xl overflow-hidden outline-2 outline-void bg-void">
       <button
-        className="p-1 h-full cursor-pointer"
+        className="p-1 h-full cursor-pointer text-core"
         onClick={() => {
-          if (order.count <= 1) {
+          if (order.count <= 0) {
             return;
           }
           setOrder({ ...order, count: order.count - 1 });
@@ -26,7 +26,7 @@ export function OrderCounter({ order, setOrder, stock }: Props) {
         {order.count}
       </span>
       <button
-        className="p-1 h-full cursor-pointer"
+        className="p-1 h-full cursor-pointer text-core"
         onClick={() => {
           if (order.count >= stock) {
             return;

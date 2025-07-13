@@ -32,5 +32,13 @@ export async function furnitureLike({
         Authorization: `Bearer ${authToken}`,
       },
     })
-    .then((res) => res.data);
+    .then((res) => res.data)
+    .catch((err) => {
+      console.log(err);
+      return {
+        success: false,
+        furnitures: [],
+        lastPage: 0,
+      };
+    });
 }

@@ -17,6 +17,11 @@ import { transitionUpdate } from "@/api/transition-update";
 import { EditIcon } from "@/components/shared/icons/edit-icon";
 import Link from "next/link";
 import Cookies from "js-cookie";
+import { likeIndex } from "@/api/like-index";
+import { likeStore } from "@/api/like-store";
+import { token } from "@/api/token";
+import { showToast } from "@/utils/show-toast";
+import { likeDestroy } from "@/api/like-destroy";
 
 export type Order = {
   furnitureId: number;
@@ -35,9 +40,10 @@ export default function Page() {
   >([]);
   const [order, setOrder] = useState<Order>({
     furnitureId: furnitureId,
-    count: 1,
+    count: 0,
   });
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLiked, setLiked] = useState<boolean>(false);
 
   useEffect(() => {
     const showApi = async () => {
@@ -50,8 +56,14 @@ export default function Page() {
       setRecommendation(recommendationResponse.furnitures);
     };
 
+    const likeIndexApi = async () => {
+      const likeIndexResponse = await likeIndex();
+      setLiked(likeIndexResponse.likeIds.includes(furnitureId));
+    };
+
     showApi();
     recommendationApi();
+    likeIndexApi();
   }, [furnitureId]);
 
   useEffect(() => {
@@ -66,6 +78,34 @@ export default function Page() {
       toFurnitureId,
       fromFurnitureId,
     });
+  };
+
+  const likeStoreApi = async (furnitureId: number) => {
+    const authToken = await token();
+    if (!authToken.success) {
+      router.push("/login");
+    }
+
+    const res = await likeStore({ furnitureId });
+    showToast(res.success, res.messages);
+
+    if (res.success) {
+      setLiked(true);
+    }
+  };
+
+  const likeDestroyApi = async (furnitureId: number) => {
+    const authToken = await token();
+    if (!authToken.success) {
+      router.push("/login");
+    }
+
+    const res = await likeDestroy({ furnitureId });
+    showToast(res.success, res.messages);
+
+    if (res.success) {
+      setLiked(false);
+    }
   };
 
   if (!furniture) return;
@@ -107,7 +147,19 @@ export default function Page() {
               <ButtonWithIcon icon={<CartIcon />}>
                 カートに入れる
               </ButtonWithIcon>
-              <ButtonWithIcon icon={<HeartIcon />}>お気に入り</ButtonWithIcon>
+              <ButtonWithIcon
+                icon={<HeartIcon />}
+                backgroundColor={isLiked ? "var(--color-error)" : ""}
+                onClick={() => {
+                  if (isLiked) {
+                    likeDestroyApi(furnitureId);
+                  } else {
+                    likeStoreApi(furnitureId);
+                  }
+                }}
+              >
+                お気に入り
+              </ButtonWithIcon>
               <ButtonWithIcon icon={<BagIcon />}>今すぐ購入する</ButtonWithIcon>
             </div>
           </footer>
