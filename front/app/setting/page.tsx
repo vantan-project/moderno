@@ -13,15 +13,20 @@ import { showToast } from "@/utils/show-toast";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { authDestroy } from "@/api/auth-destroy";
+import { useGlobalContext } from "@/hooks/use-global-state";
+import { set } from "react-hook-form";
 
 export default function Page() {
   const router = useRouter();
+  const { setIsLoggedIn } = useGlobalContext();
   const [postalCode, setPostalCode] = useState("");
 
   const logoutApi = async () => {
     const res = await authLogout();
     showToast(res.success, res.messages);
+
     if (res.success) {
+      setIsLoggedIn(false);
       Cookies.remove("authToken");
       router.push("/");
     }
@@ -30,7 +35,9 @@ export default function Page() {
   const destroyApi = async () => {
     const res = await authDestroy();
     showToast(res.success, res.messages);
+
     if (res.success) {
+      setIsLoggedIn(false);
       Cookies.remove("authToken");
       router.push("/");
     }

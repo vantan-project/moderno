@@ -11,9 +11,11 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { useGlobalContext } from "@/hooks/use-global-state";
 
 export default function SignUpPage() {
   const router = useRouter();
+  const { setIsLoggedIn } = useGlobalContext();
   const {
     register,
     handleSubmit,
@@ -29,6 +31,7 @@ export default function SignUpPage() {
     }
 
     await showToast(res.success, res.messages);
+    setIsLoggedIn(res.success);
   };
 
   return (

@@ -32,7 +32,7 @@ export default function RootLayout({
       >
         <MantineProvider>
           <FixedWrapper>{children}</FixedWrapper>
-          <Notifications position="bottom-right" />
+          <Notifications position="top-center" />
         </MantineProvider>
       </body>
     </html>

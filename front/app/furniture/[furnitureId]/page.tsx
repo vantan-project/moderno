@@ -201,7 +201,7 @@ export default function Page() {
 
       {isAdmin && (
         <Link
-          className="fixed bottom-14 right-14 text-void border-3 border-void rounded-full py-4 px-12 bg-core flex items-center gap-4"
+          className="fixed bottom-14 right-14 text-void border-3 border-void rounded-full py-2 px-12 bg-core flex items-center gap-4"
           href={`/furniture/${furnitureId}/edit`}
         >
           <EditIcon className="w-8 h-8" />

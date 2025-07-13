@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { authSignUp, AuthSignUpRequest } from "@/api/auth-sign-up";
+import { useGlobalContext } from "@/hooks/use-global-state";
 
 type FormInput = AuthSignUpRequest & {
   confirmPassword?: string;
@@ -18,6 +19,7 @@ type FormInput = AuthSignUpRequest & {
 
 export default function SignUpPage() {
   const router = useRouter();
+  const { setIsLoggedIn } = useGlobalContext();
   const {
     register,
     handleSubmit,
@@ -35,6 +37,7 @@ export default function SignUpPage() {
     }
 
     await showToast(res.success, res.messages);
+    setIsLoggedIn(res.success);
   };
 
   return (

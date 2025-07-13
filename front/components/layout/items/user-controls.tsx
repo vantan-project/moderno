@@ -4,13 +4,11 @@ import { CartIcon } from "@/components/shared/icons/cart-icon";
 import { HeartIcon } from "@/components/shared/icons/heart-icon";
 import { LoginIcon } from "@/components/shared/icons/login-icon";
 import { UserIcon } from "@/components/shared/icons/user-icon";
+import { useGlobalContext } from "@/hooks/use-global-state";
 import { useRouter } from "next/navigation";
 
-type Props = {
-  isLoggedIn: boolean;
-};
-
-export function UserControls({ isLoggedIn }: Props) {
+export function UserControls() {
+  const { isLoggedIn } = useGlobalContext();
   const router = useRouter();
   const iconClassName = "w-8 h-8 hover:opacity-30";
   const handleLike = async () => {
