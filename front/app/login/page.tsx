@@ -15,7 +15,7 @@ export default function Page() {
 
     if (loginResponse.success) {
       Cookies.set("authToken", loginResponse.authToken, { expires: 7 });
-      router.push("/admin");
+      router.push("/");
     }
 
     await showToast(loginResponse.success, loginResponse.messages);

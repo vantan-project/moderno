@@ -7,13 +7,11 @@ type Props = {
 export function ButtonWithLabel({ onClick, label, children }: Props) {
   return (
     <button
-      className="flex flex-col items-center cursor-pointer gap-1"
+      className="flex flex-col items-center cursor-pointer gap-0.5"
       type="button"
       onClick={onClick}
     >
-      <div className="w-10 h-10">
-        {children}
-      </div>
+      {children}
       <p className="text-[10px]">{label}</p>
     </button>
   );

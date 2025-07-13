@@ -24,9 +24,10 @@ export async function authLogin({
     })
     .then((res) => res.data)
     .catch((err) => {
+      console.log(err);
       return {
         success: false,
-        messages: err.response?.data.messages || ["エラーが発生しました"],
+        messages: err.response?.data.messages || [],
         authToken: "",
       };
     });

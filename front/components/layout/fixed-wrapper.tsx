@@ -18,16 +18,18 @@ export function FixedWrapper({ children }: Props) {
     !pathname.startsWith("/sign-up"),
   ];
   const allTrue = conditions.every((condition) => condition === true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const tokenApi = async () => {
+    const intervalId = setInterval(async () => {
       const res = await token();
       setIsLoggedIn(res.success);
-    };
+    }, 1000);
 
-    tokenApi();
+    return () => clearInterval(intervalId);
   }, []);
+
+  if (isLoggedIn === null) return;
 
   return (
     <>

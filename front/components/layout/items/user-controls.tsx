@@ -11,11 +11,11 @@ type Props = {
 
 export function UserControls({ isLoggedIn }: Props) {
   const router = useRouter();
-  const iconClassName = "w-10 h-10 hover:opacity-30";
+  const iconClassName = "w-8 h-8 hover:opacity-30";
 
   return (
-    <div className="flex items-center gap-5 bg-core text-void rounded-2xl py-2 px-5 border-2 border-void [&>*]:w-16">
-      <ButtonWithLabel onClick={() => {}} label="お気に入り">
+    <div className="flex items-center gap-2 bg-[rgba(255,255,255,0.7)] backdrop-filter-[blur(8px)] text-void rounded-2xl py-2 px-5 [&>*]:w-16">
+      <ButtonWithLabel onClick={() => router.push("/like")} label="お気に入り">
         <HeartIcon className={iconClassName} />
       </ButtonWithLabel>
       <ButtonWithLabel onClick={() => {}} label="カート">
@@ -23,7 +23,10 @@ export function UserControls({ isLoggedIn }: Props) {
       </ButtonWithLabel>
 
       {isLoggedIn ? (
-        <ButtonWithLabel onClick={() => {}} label="ユーザー設定">
+        <ButtonWithLabel
+          onClick={() => router.push("/setting")}
+          label="ユーザー設定"
+        >
           <UserIcon className={iconClassName} />
         </ButtonWithLabel>
       ) : (

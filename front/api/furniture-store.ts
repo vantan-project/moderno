@@ -41,12 +41,9 @@ export async function furnitureStore({
     )
     .then((res) => res.data)
     .catch((err) => {
-      if (err.response?.status === 401) {
-        window.location.href = "/login";
-      }
       return {
         success: false,
-        messages: err.response?.data.messages || ["エラーが発生しました"],
+        messages: err.response?.data.messages || [],
       };
     });
 }

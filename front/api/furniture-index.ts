@@ -14,10 +14,7 @@ export type FurnitureIndexResponse = {
     id: number;
     name: string;
     imageUrl: string;
-    detail: string;
     price: number;
-    categoryId: number;
-    stock: number;
   }[];
   lastPage: number;
 };
