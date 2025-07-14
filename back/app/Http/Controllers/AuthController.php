@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Request;
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthSignUpLoginRequest;
+use App\Http\Requests\AuthUpdateRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
@@ -56,6 +57,29 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'messages' => ['ログアウトしました。'],
+        ]);
+    }
+
+    public function update(AuthUpdateRequest $request)
+    {
+        $auth = $request["auth"];
+        $authUser = $request->user();
+
+        $updateData = [];
+
+        if (isset($auth['name'])) $updateData['name'] = $auth['name'];
+        if (isset($auth['email'])) $updateData['email'] = $auth['email'];
+        if (!empty($auth['password'])) $updateData['password'] = Hash::make($auth['password']);
+        if (isset($auth['postal_code'])) $updateData['postal_code'] = $auth['postal_code'];
+        if (isset($auth['prefecture'])) $updateData['prefecture'] = $auth['prefecture'];
+        if (isset($auth['city'])) $updateData['city'] = $auth['city'];
+        if (isset($auth['street_address'])) $updateData['street_address'] = $auth['street_address'];
+
+        $authUser->fill($updateData)->save();
+
+        return response()->json([
+            'success' => true,
+            'messages' => ['ユーザー情報を更新しました。'],
         ]);
     }
 
