@@ -60,30 +60,18 @@ class AuthController extends Controller
         ]);
     }
 
-    public function update(AuthUpdateRequest $request)
+    public function index(Request $request)
     {
-        $auth = $request["auth"];
-        $authUser = $request->user();
-
-        $updateData = [];
-
-        if (isset($auth['name'])) $updateData['name'] = $auth['name'];
-        if (isset($auth['email'])) $updateData['email'] = $auth['email'];
-        if (!empty($auth['password'])) $updateData['password'] = Hash::make($auth['password']);
-        if (isset($auth['postal_code'])) $updateData['postal_code'] = $auth['postal_code'];
-        if (isset($auth['prefecture'])) $updateData['prefecture'] = $auth['prefecture'];
-        if (isset($auth['city'])) $updateData['city'] = $auth['city'];
-        if (isset($auth['street_address'])) $updateData['street_address'] = $auth['street_address'];
-
-        $authUser->fill($updateData)->save();
+        $authUser = Auth::user();
 
         return response()->json([
             'success' => true,
-            'messages' => ['ユーザー情報を更新しました。'],
+            'message' => ['ユーザー情報を取得しました。'],
+            'user' => $authUser,
         ]);
     }
 
-    public function destroy(Request $request)
+    public function update(AuthUpdateRequest $request)
     {
         $auth = $request["auth"];
         $authUser = $request->user();
