@@ -10,6 +10,8 @@ use Illuminate\Support\Carbon;
 
 class FurnitureController extends Controller
 {
+    protected int $PER_PAGE = 20;
+
     public function index(Request $request) {
         $categoryId = $request['search.categoryId'];
         $currentPage = $request['search.currentPage'];
@@ -24,8 +26,7 @@ class FurnitureController extends Controller
             });
        }
 
-       $PER_PAGE = 20;
-       $furnitures = $furnitures->paginate($PER_PAGE, ['*'], 'page', $currentPage);
+       $furnitures = $furnitures->paginate($this->PER_PAGE, ['*'], 'page', $currentPage);
 
         return response()->json([
             'success' => true,
@@ -35,10 +36,7 @@ class FurnitureController extends Controller
                         'id' => $furniture->id,
                         'name' => $furniture->name,
                         'imageUrl' => $furniture->image_url,
-                        'detail' => $furniture->detail,
                         'price' => $furniture->price,
-                        'categoryId' => $furniture->category_id,
-                        'stock' => $furniture->stock,
                     ];
                 })
                 ->toArray(),
@@ -200,24 +198,35 @@ class FurnitureController extends Controller
         ]);
     }
 
-    public function like(){
-        
+    public function like(Request $request) {
+        $currentPage = $request['search.currentPage'];
+        $keyword = $request['search.keyword'];
+
         $authUser = request()->user();
 
         $furnitures = $authUser
-            ->likeFurnitures
-            ->sortByDesc('created_at')
-            ->map(function($furniture) {
+            ->likeFurnitures()
+            ->orderBy('pivot_created_at', 'desc');
+
+        if ($keyword) {
+            $furnitures = $furnitures->where(function ($query) use ($keyword) {
+                $query->where('name', 'like', '%' . $keyword . '%')
+                    ->orWhere('detail', 'like', '%' . $keyword . '%');
+            });
+        }
+
+        $furnitures = $furnitures->paginate($this->PER_PAGE, ['*'], 'page', $currentPage);
+        return response()->json([
+            'success' => true,
+            'furnitures' => $furnitures->map(function ($furniture) {
                 return [
                     'id' => $furniture->id,
                     'name' => $furniture->name,
                     'imageUrl' => $furniture->image_url,
+                    'price' => $furniture->price,
                 ];
-            });
-
-        return response()->json([
-            'success' => true,
-            'furnitures' => $furnitures,
+            }),
+            'lastPage' => $furnitures->lastPage(),
         ]);
     }
 }

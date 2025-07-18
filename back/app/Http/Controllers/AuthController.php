@@ -48,9 +48,9 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
-        $authUser = $request->user();
+        $authUser = request()->user();
 
         $authUser->currentAccessToken()->delete();
 
@@ -85,7 +85,30 @@ class AuthController extends Controller
 
     public function destroy(Request $request)
     {
+        $auth = $request["auth"];
         $authUser = $request->user();
+
+        $updateData = [];
+
+        if (isset($auth['name'])) $updateData['name'] = $auth['name'];
+        if (isset($auth['email'])) $updateData['email'] = $auth['email'];
+        if (!empty($auth['password'])) $updateData['password'] = Hash::make($auth['password']);
+        if (isset($auth['postal_code'])) $updateData['postal_code'] = $auth['postal_code'];
+        if (isset($auth['prefecture'])) $updateData['prefecture'] = $auth['prefecture'];
+        if (isset($auth['city'])) $updateData['city'] = $auth['city'];
+        if (isset($auth['street_address'])) $updateData['street_address'] = $auth['street_address'];
+
+        $authUser->fill($updateData)->save();
+
+        return response()->json([
+            'success' => true,
+            'messages' => ['ユーザー情報を更新しました。'],
+        ]);
+    }
+
+    public function destroy()
+    {
+        $authUser = request()->user();
 
         $authUser->delete();
 

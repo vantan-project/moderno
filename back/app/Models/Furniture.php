@@ -24,7 +24,7 @@ class Furniture extends Model
     }
 
     public static function uploadS3($imageFile) {
-        $path = Storage::disk('s3')->putFile('furniture', $imageFile);
+        $path = Storage::disk('s3')->putFile('furnitures', $imageFile);
         return config('filesystems.disks.s3.url') . '/' . $path;
     }
 
