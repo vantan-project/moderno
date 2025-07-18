@@ -60,7 +60,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function index(Request $request)
+    public function index()
     {
         $authUser = Auth::user();
 
