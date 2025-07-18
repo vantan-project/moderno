@@ -60,6 +60,23 @@ class AuthController extends Controller
         ]);
     }
 
+    public function index()
+    {
+        $authUser = Auth::user();
+
+        return response()->json([
+            'success' => true,
+            'auth' => [
+                'name' => $authUser->name,
+                'email' => $authUser->email,
+                'postalCode' => $authUser->postal_code,
+                'prefecture' => $authUser->prefecture,
+                'city' => $authUser->city,
+                'streetAddress' => $authUser->street_address,
+            ],
+        ]);
+    }
+
     public function update(AuthUpdateRequest $request)
     {
         $auth = $request["auth"];
