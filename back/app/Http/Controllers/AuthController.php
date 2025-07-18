@@ -66,8 +66,14 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => ['ユーザー情報を取得しました。'],
-            'user' => $authUser,
+            'auth' => [
+                'name' => $authUser->name,
+                'email' => $authUser->email,
+                'postalCode' => $authUser->postal_code,
+                'prefecture' => $authUser->prefecture,
+                'city' => $authUser->city,
+                'streetAddress' => $authUser->street_address,
+            ],
         ]);
     }
 
