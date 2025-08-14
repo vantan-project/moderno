@@ -10,6 +10,7 @@ export function MantinePasswordInput(props: PasswordInputProps) {
         input: "!py-5 !border-none !rounded-full",
         section: "px-2",
         visibilityToggle: "hover:!bg-transparent hover:opacity-80",
+        ...props.classNames,
       }}
       visibilityToggleIcon={({ reveal }) =>
         reveal ? (

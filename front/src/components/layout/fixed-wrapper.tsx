@@ -6,7 +6,6 @@ import { token } from "@/api/token";
 import { SideHeader } from "./items/side-header";
 import { UserControls } from "./items/user-controls";
 import { GlobalContext } from "@/hooks/use-global-state";
-import { set } from "react-hook-form";
 
 type Props = {
   children: React.ReactNode;

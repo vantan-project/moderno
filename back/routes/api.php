@@ -39,7 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [AuthController::class, 'index']);
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::patch('/', [AuthController::class, 'update']);
-        Route::delete('/destroy', [AuthController::class, 'destroy']);
+        Route::delete('/', [AuthController::class, 'destroy']);
     });
 });
 
