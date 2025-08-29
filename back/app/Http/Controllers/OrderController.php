@@ -12,7 +12,8 @@ class OrderController extends Controller
 {
     public function index(Request $request) {
         $currentPage = $request['currentPage'];
-        $orders = Order::with('furniture');
+        $orders = Order::with('furniture')
+            ->where('is_shipped',true);
         $PER_PAGE = 20;
         $orders = $orders->paginate($PER_PAGE, ['*'], 'page', $currentPage);
 
@@ -33,6 +34,29 @@ class OrderController extends Controller
                     ];
                 }),
             'lastPage' => $orders->lastPage(),
+        ]);
+    }
+
+    public function stockout(Request $request){
+        $orders = Order::with('furniture')
+            ->where('is_shipped',false)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'orders' => $orders->map(function ($order) {
+                    return [
+                        'id' => $order->id,
+                        'furniture' => [
+                            'id' => $order->furniture->id,
+                            'name' => $order->furniture->name,
+                            'imageUrl' => $order->furniture->image_url,
+                        ],
+                        'count' => $order->count,
+                        'isShipped' => (bool) $order->is_shipped,
+                        'isCompleted' => (bool) $order->is_completed,
+                    ];
+                }),
         ]);
     }
 
