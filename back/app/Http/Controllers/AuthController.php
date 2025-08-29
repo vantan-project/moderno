@@ -69,10 +69,10 @@ class AuthController extends Controller
             'auth' => [
                 'name' => $authUser->name,
                 'email' => $authUser->email,
-                'postalCode' => $authUser->postal_code,
-                'prefecture' => $authUser->prefecture,
-                'city' => $authUser->city,
-                'streetAddress' => $authUser->street_address,
+                'postalCode' => $authUser->postal_code ?? "",
+                'prefecture' => $authUser->prefecture ?? "",
+                'city' => $authUser->city ?? "",
+                'streetAddress' => $authUser->street_address ?? "",
             ],
         ]);
     }
@@ -87,10 +87,10 @@ class AuthController extends Controller
         if (isset($auth['name'])) $updateData['name'] = $auth['name'];
         if (isset($auth['email'])) $updateData['email'] = $auth['email'];
         if (!empty($auth['password'])) $updateData['password'] = Hash::make($auth['password']);
-        if (isset($auth['postal_code'])) $updateData['postal_code'] = $auth['postal_code'];
+        if (isset($auth['postalCode'])) $updateData['postal_code'] = $auth['postalCode'];
         if (isset($auth['prefecture'])) $updateData['prefecture'] = $auth['prefecture'];
         if (isset($auth['city'])) $updateData['city'] = $auth['city'];
-        if (isset($auth['street_address'])) $updateData['street_address'] = $auth['street_address'];
+        if (isset($auth['streetAddress'])) $updateData['street_address'] = $auth['streetAddress'];
 
         $authUser->fill($updateData)->save();
 

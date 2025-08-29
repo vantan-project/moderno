@@ -27,10 +27,10 @@ public function rules(): array
             'auth.name' => 'sometimes|required|string|max:50',
             'auth.email'=> 'sometimes|required|email|max:255|unique:users,email,' . $this->user()->id,
             'auth.password' => 'sometimes|required|string|max:100',
-            'auth.postal_code' => 'sometimes|required|string|max:10',
+            'auth.postalCode' => 'sometimes|required|string|max:10',
             'auth.prefecture' => 'sometimes|required|string|max:50',
             'auth.city' => 'sometimes|required|string|max:100',
-            'auth.street_address' => 'sometimes|required|string|max:255',
+            'auth.streetAddress' => 'sometimes|required|string|max:255',
         ];
     }
 
@@ -50,9 +50,9 @@ public function rules(): array
             'auth.password.string'   => 'パスワードは文字列で入力してください。',
             'auth.password.max'      => 'パスワードは100文字以内で入力してください。',
 
-            'auth.postal_code.required' => '郵便番号は必須です。',
-            'auth.postal_code.string'   => '郵便番号は文字列で入力してください。',
-            'auth.postal_code.max'      => '郵便番号は10文字以内で入力してください。',
+            'auth.postalCode.required' => '郵便番号は必須です。',
+            'auth.postalCode.string'   => '郵便番号は文字列で入力してください。',
+            'auth.postalCode.max'      => '郵便番号は10文字以内で入力してください。',
 
             'auth.prefecture.required' => '都道府県は必須です。',
             'auth.prefecture.string'   => '都道府県は文字列で入力してください。',
@@ -62,9 +62,9 @@ public function rules(): array
             'auth.city.string'   => '市区町村は文字列で入力してください。',
             'auth.city.max'      => '市区町村は100文字以内で入力してください。',
 
-            'auth.street_address.required' => '番地・建物名は必須です。',
-            'auth.street_address.string'   => '番地・建物名は文字列で入力してください。',
-            'auth.street_address.max'      => '番地・建物名は255文字以内で入力してください。',
+            'auth.streetAddress.required' => '番地・建物名は必須です。',
+            'auth.streetAddress.string'   => '番地・建物名は文字列で入力してください。',
+            'auth.streetAddress.max'      => '番地・建物名は255文字以内で入力してください。',
         ];
     }
 
