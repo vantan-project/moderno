@@ -22,6 +22,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'postal_code',
+        'prefecture',
+        'city',
+        'street_address',
         'is_admin',
     ];
 
@@ -50,5 +54,13 @@ class User extends Authenticatable
 
     public function orders() {
         return $this->hasMany(Order::class);
+    }
+
+    public function likes() {
+        return $this->hasMany(Like::class);
+    }
+
+    public function likeFurnitures(){
+        return $this->belongsToMany(Furniture::class, 'likes')->withTimestamps();
     }
 }

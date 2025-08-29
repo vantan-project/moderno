@@ -1,0 +1,20 @@
+@import "tailwindcss";
+@import "@mantine/core/styles.layer.css";
+@import "@mantine/notifications/styles.css";
+
+@theme {
+  --color-core: white;
+  --color-void: #4d4d4d;
+  --color-gray: #dadada;
+  --color-sccess: #34d399;
+  --color-error: #ed3a49;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+  color: var(--color-void);
+}
+
+input {
+  outline: none;
+}

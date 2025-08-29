@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Request;
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthSignUpLoginRequest;
+use App\Http\Requests\AuthUpdateRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
@@ -47,9 +48,9 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
-        $authUser = $request->user();
+        $authUser = request()->user();
 
         $authUser->currentAccessToken()->delete();
 
@@ -59,9 +60,49 @@ class AuthController extends Controller
         ]);
     }
 
-    public function destroy(Request $request)
+    public function index()
     {
+        $authUser = Auth::user();
+
+        return response()->json([
+            'success' => true,
+            'auth' => [
+                'name' => $authUser->name,
+                'email' => $authUser->email,
+                'postalCode' => $authUser->postal_code ?? "",
+                'prefecture' => $authUser->prefecture ?? "",
+                'city' => $authUser->city ?? "",
+                'streetAddress' => $authUser->street_address ?? "",
+            ],
+        ]);
+    }
+
+    public function update(AuthUpdateRequest $request)
+    {
+        $auth = $request["auth"];
         $authUser = $request->user();
+
+        $updateData = [];
+
+        if (isset($auth['name'])) $updateData['name'] = $auth['name'];
+        if (isset($auth['email'])) $updateData['email'] = $auth['email'];
+        if (!empty($auth['password'])) $updateData['password'] = Hash::make($auth['password']);
+        if (isset($auth['postalCode'])) $updateData['postal_code'] = $auth['postalCode'];
+        if (isset($auth['prefecture'])) $updateData['prefecture'] = $auth['prefecture'];
+        if (isset($auth['city'])) $updateData['city'] = $auth['city'];
+        if (isset($auth['streetAddress'])) $updateData['street_address'] = $auth['streetAddress'];
+
+        $authUser->fill($updateData)->save();
+
+        return response()->json([
+            'success' => true,
+            'messages' => ['ユーザー情報を更新しました。'],
+        ]);
+    }
+
+    public function destroy()
+    {
+        $authUser = request()->user();
 
         $authUser->delete();
 

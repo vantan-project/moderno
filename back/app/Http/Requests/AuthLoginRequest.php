@@ -32,11 +32,11 @@ class AuthLoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'メールアドレスは必須です。',
-            'email.email' => '有効なメールアドレスを入力してください。',
+            'auth.email.required' => 'メールアドレスは必須です。',
+            'auth.email.email' => '有効なメールアドレスを入力してください。',
 
-            'password.required' => 'パスワードは必須です。',
-            'password.string' => 'パスワードは文字列で入力してください。',
+            'auth.password.required' => 'パスワードは必須です。',
+            'auth.password.string' => 'パスワードは文字列で入力してください。',
         ];
     }
 
