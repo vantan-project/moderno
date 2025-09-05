@@ -8,7 +8,8 @@ use App\Http\Requests\LikeStoreRequest;
 
 class LikeController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $authUser = request()->user();
 
         $likeIds = $authUser
@@ -22,11 +23,12 @@ class LikeController extends Controller
         ]);
     }
 
-    public function store(LikeStoreRequest $request){
+    public function store(LikeStoreRequest $request)
+    {
         $authUser = request()->user();
 
         Like::create([
-            'user_id'=> $authUser->id,
+            'user_id' => $authUser->id,
             'furniture_id' => $request['furnitureId'],
         ]);
 
@@ -36,7 +38,8 @@ class LikeController extends Controller
         ]);
     }
 
-    public function destroy($furnitureId){
+    public function destroy($furnitureId)
+    {
         $authUser = request()->user();
 
         Like::where('user_id', $authUser->id)
@@ -48,5 +51,4 @@ class LikeController extends Controller
             'messages' => ['お気に入りから削除しました。'],
         ]);
     }
-
 }

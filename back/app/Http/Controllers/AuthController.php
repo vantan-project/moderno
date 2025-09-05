@@ -32,7 +32,8 @@ class AuthController extends Controller
         ], 401);
     }
 
-    public function signUp(AuthSignUpLoginRequest $request) {
+    public function signUp(AuthSignUpLoginRequest $request)
+    {
         $auth = $request["auth"];
 
         $user = User::create([
