@@ -119,11 +119,15 @@ class OrderController extends Controller
                 }
                 $furniture->decrement('stock', $needed);
 
+                $now = now();
+
                 $insertRecords[] = [
                     'user_id' => $authUser->id,
                     'furniture_id' => $furniture->id,
                     'count' => $needed,
                     'is_shipped' => true,
+                    'created_at' => $now,
+                    'updated_at' => $now,
                 ];
             }
 
