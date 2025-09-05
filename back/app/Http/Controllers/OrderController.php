@@ -104,6 +104,7 @@ class OrderController extends Controller
 
         DB::transaction(function () use ($authUser, $orderCounts, $furnitures) {
             $insertRecords = [];
+            $now = now();
 
             foreach ($furnitures as $furniture) {
                 $needed = $orderCounts[$furniture->id];
@@ -114,6 +115,8 @@ class OrderController extends Controller
                         'furniture_id' => $furniture->id,
                         'count' => $needed,
                         'is_shipped' => false,
+                        'created_at' => $now,
+                        'updated_at' => $now,
                     ];
                     continue;
                 }
@@ -124,6 +127,8 @@ class OrderController extends Controller
                     'furniture_id' => $furniture->id,
                     'count' => $needed,
                     'is_shipped' => true,
+                    'created_at' => $now,
+                    'updated_at' => $now,
                 ];
             }
 
