@@ -12,21 +12,22 @@ class FurnitureController extends Controller
 {
     protected int $PER_PAGE = 20;
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $categoryId = $request['search.categoryId'];
         $currentPage = $request['search.currentPage'];
         $keyword = $request['search.keyword'];
 
-       $furnitures = Furniture::where('category_id', $categoryId);
+        $furnitures = Furniture::where('category_id', $categoryId);
 
-       if ($keyword) {
+        if ($keyword) {
             $furnitures = $furnitures->where(function ($query) use ($keyword) {
                 $query->where('name', 'like', '%' . $keyword . '%')
                     ->orWhere('detail', 'like', '%' . $keyword . '%');
             });
-       }
+        }
 
-       $furnitures = $furnitures->paginate($this->PER_PAGE, ['*'], 'page', $currentPage);
+        $furnitures = $furnitures->paginate($this->PER_PAGE, ['*'], 'page', $currentPage);
 
         return response()->json([
             'success' => true,
@@ -44,7 +45,8 @@ class FurnitureController extends Controller
         ]);
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $furniture = Furniture::findOrFail($id);
 
         return response()->json([
@@ -60,7 +62,8 @@ class FurnitureController extends Controller
         ]);
     }
 
-    public function store(FurnitureStoreRequest $request) {
+    public function store(FurnitureStoreRequest $request)
+    {
         $input = $request["furniture"];
 
         $imageUrl = Furniture::uploadS3($input['imageFile']);
@@ -79,7 +82,8 @@ class FurnitureController extends Controller
         ]);
     }
 
-    public function update(FurnitureUpdateRequest $request, int $id) {
+    public function update(FurnitureUpdateRequest $request, int $id)
+    {
         $input = $request["furniture"];
 
         $furniture = Furniture::findOrFail($id);
@@ -104,7 +108,8 @@ class FurnitureController extends Controller
         ]);
     }
 
-    public function destroy(int $id) {
+    public function destroy(int $id)
+    {
         $furniture = Furniture::findOrFail($id);
         $furniture->delete();
 
@@ -114,7 +119,8 @@ class FurnitureController extends Controller
         ]);
     }
 
-    public function weeklyRanking() {
+    public function weeklyRanking()
+    {
         $oneWeekAgo = Carbon::now()->subWeek();
 
         $furnitures = Furniture::whereHas('orders', function ($query) use ($oneWeekAgo) {
@@ -139,7 +145,8 @@ class FurnitureController extends Controller
         ]);
     }
 
-    public function newArrival() {
+    public function newArrival()
+    {
         $furnitures = Furniture::orderBy('created_at', 'desc')
             ->take(10)
             ->get();
@@ -156,7 +163,8 @@ class FurnitureController extends Controller
         ]);
     }
 
-    public function recommendation($id) {
+    public function recommendation($id)
+    {
         $RECOMMENDATION_LIMIT = 10;
         $furniture = Furniture::find($id);
 
@@ -165,7 +173,7 @@ class FurnitureController extends Controller
             ->orderByDesc('count')
             ->limit($RECOMMENDATION_LIMIT)
             ->get()
-            ->map(fn ($transition) => [
+            ->map(fn($transition) => [
                 'id' => $transition->toFurniture->id,
                 'name' => $transition->toFurniture->name,
                 'imageUrl' => $transition->toFurniture->image_url,
@@ -198,7 +206,8 @@ class FurnitureController extends Controller
         ]);
     }
 
-    public function like(Request $request) {
+    public function like(Request $request)
+    {
         $currentPage = $request['search.currentPage'];
         $keyword = $request['search.keyword'];
 
