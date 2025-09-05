@@ -61,9 +61,9 @@ class OrderController extends Controller
     }
 
     public function history(Request $request) {
-        $authUser = request()->user();
         $currentPage = $request['currentPage'];
-        $orders = $authUser->orders()->with('furniture');
+        $orders = Order::with('furniture')
+            ->where('is_shipped',true);
         $PER_PAGE = 20;
         $orders = $orders->paginate($PER_PAGE, ['*'], 'page', $currentPage);
 
