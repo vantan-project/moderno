@@ -110,7 +110,7 @@ class OrderController extends Controller
                         'user_id' => $authUser->id,
                         'furniture_id' => $furniture->id,
                         'count' => $needed,
-                        'is_completed' => false,
+                        'is_shipped' => false,
                     ];
                     continue;
                 }
@@ -120,7 +120,7 @@ class OrderController extends Controller
                     'user_id' => $authUser->id,
                     'furniture_id' => $furniture->id,
                     'count' => $needed,
-                    'is_completed' => true,
+                    'is_shipped' => true,
                 ];
             }
 
