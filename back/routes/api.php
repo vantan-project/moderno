@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('order')->group(function () {
         Route::get('/', [OrderController::class, 'index']);
+        Route::get('/stockout', [OrderController::class, 'stockout']);
         Route::get('/history', [OrderController::class, 'history']);
         Route::post('/', [OrderController::class, 'store']);
         Route::delete('/{id}', [OrderController::class, 'destroy']);
