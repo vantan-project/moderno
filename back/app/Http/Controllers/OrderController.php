@@ -143,7 +143,7 @@ class OrderController extends Controller
         $authUser = request()->user();
         $order = $authUser->orders()->find($id);
 
-        if ($order->is_shopped) {
+        if ($order->is_shipped) {
             return response()->json([
                 'success' => false,
                 'messages' => ['発送後のため注文をキャンセルできません。'],
