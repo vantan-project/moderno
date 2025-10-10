@@ -42,6 +42,7 @@ class OrderController extends Controller
     {
         $orders = Order::with('furniture')
             ->where('is_shipped', false)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return response()->json([
@@ -57,6 +58,7 @@ class OrderController extends Controller
                     'count' => $order->count,
                     'isShipped' => (bool) $order->is_shipped,
                     'isCompleted' => (bool) $order->is_completed,
+                    'createdAt' => $order->created_at?->format('Y/m/d') ?? '',
                 ];
             }),
         ]);
@@ -66,7 +68,10 @@ class OrderController extends Controller
     {
         $authUser = request()->user();
         $currentPage = $request['currentPage'];
-        $orders = $authUser->orders()->with('furniture')->where('is_shipped', true);
+        $orders = $authUser->orders()
+          ->with('furniture')
+          ->where('is_shipped', true)
+          ->orderBy('created_at', 'desc');
         $PER_PAGE = 20;
         $orders = $orders->paginate($PER_PAGE, ['*'], 'page', $currentPage);
 
@@ -84,6 +89,7 @@ class OrderController extends Controller
                         'count' => $order->count,
                         'isShipped' => (bool) $order->is_shipped,
                         'isCompleted' => (bool) $order->is_completed,
+                        'createdAt' => $order->created_at?->format('Y/m/d') ?? '',
                     ];
                 }),
             'lastPage' => $orders->lastPage(),

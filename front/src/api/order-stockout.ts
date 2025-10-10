@@ -13,6 +13,7 @@ export type OrderStockoutResponse = {
     count: number;
     isShipped: boolean;
     isCompleted: boolean;
+    createdAt: string;
   }[];
 };
 
