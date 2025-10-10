@@ -17,6 +17,7 @@ export type OrderHistoryResponse = {
     count: number;
     isShipped: boolean;
     isCompleted: boolean;
+    createdAt: string;
   }[];
   lastPage: number;
 };
