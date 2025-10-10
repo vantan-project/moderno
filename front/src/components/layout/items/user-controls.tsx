@@ -33,7 +33,7 @@ export function UserControls() {
 
   return (
     <div className="flex items-center gap-2 bg-[rgba(255,255,255,0.7)] backdrop-filter-[blur(8px)] text-void rounded-2xl py-2 px-5 [&>*]:w-16">
-      <ButtonWithLabel onClick={handleHistory} label="履歴">
+      <ButtonWithLabel onClick={handleHistory} label="購入履歴">
         <HistoryIcon className={iconClassName} />
       </ButtonWithLabel>
       <ButtonWithLabel onClick={handleLike} label="お気に入り">
