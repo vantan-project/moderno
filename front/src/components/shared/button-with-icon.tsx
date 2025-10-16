@@ -15,7 +15,7 @@ export function ButtonWithIcon({
 }: Props) {
   return (
     <button
-      className="w-full py-2 rounded-2xl flex justify-center items-center gap-4 cursor-pointer"
+      className="w-full py-2 rounded-lg flex justify-center items-center gap-4 cursor-pointer"
       style={{
         color: color || "var(--color-core)",
         backgroundColor: backgroundColor || "var(--color-void)",

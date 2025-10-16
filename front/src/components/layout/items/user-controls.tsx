@@ -20,13 +20,22 @@ export function UserControls() {
 
     router.push("/like");
   };
+  const handleCart = async () => {
+    const tokenRes = await token();
+    if (!tokenRes.success) {
+      router.push("/login");
+      return;
+    }
+
+    router.push("/cart");
+  };
 
   return (
     <div className="flex items-center gap-2 bg-[rgba(255,255,255,0.7)] backdrop-filter-[blur(8px)] text-void rounded-2xl py-2 px-5 [&>*]:w-16">
       <ButtonWithLabel onClick={handleLike} label="お気に入り">
         <HeartIcon className={iconClassName} />
       </ButtonWithLabel>
-      <ButtonWithLabel onClick={() => {}} label="カート">
+      <ButtonWithLabel onClick={handleCart} label="カート">
         <CartIcon className={iconClassName} />
       </ButtonWithLabel>
 

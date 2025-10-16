@@ -15,6 +15,7 @@ export type FurnitureLikeResponse = {
     name: string;
     imageUrl: string;
     price: number;
+    stock: number;
   }[];
   lastPage: number;
 };

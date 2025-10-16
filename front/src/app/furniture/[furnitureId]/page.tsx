@@ -4,7 +4,7 @@ import { furnitureShow, FurnitureShowResponse } from "@/api/furniture-show";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { OrderCounter } from "../../../components/features/furniture-[furnitureId]/order-counter";
+import { OrderCounter } from "../../../components/shared/order-counter";
 import { ButtonWithIcon } from "@/components/shared/button-with-icon";
 import { CartIcon } from "@/components/shared/icons/cart-icon";
 import { HeartIcon } from "@/components/shared/icons/heart-icon";
@@ -17,16 +17,11 @@ import { transitionUpdate } from "@/api/transition-update";
 import { EditIcon } from "@/components/shared/icons/edit-icon";
 import Link from "next/link";
 import Cookies from "js-cookie";
-import { likeIndex } from "@/api/like-index";
 import { likeStore } from "@/api/like-store";
 import { token } from "@/api/token";
 import { showToast } from "@/utils/show-toast";
 import { likeDestroy } from "@/api/like-destroy";
-
-export type Order = {
-  furnitureId: number;
-  count: number;
-};
+import { useGlobalContext } from "@/hooks/use-global-state";
 
 export default function Page() {
   const params = useParams();
@@ -38,12 +33,8 @@ export default function Page() {
   const [recommendation, setRecommendation] = useState<
     FurnitureRecommendationResponse["furnitures"]
   >([]);
-  const [order, setOrder] = useState<Order>({
-    furnitureId: furnitureId,
-    count: 0,
-  });
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isLiked, setLiked] = useState<boolean>(false);
+  const { likeIds, setLikeIds } = useGlobalContext();
 
   useEffect(() => {
     const showApi = async () => {
@@ -56,14 +47,8 @@ export default function Page() {
       setRecommendation(recommendationResponse.furnitures);
     };
 
-    const likeIndexApi = async () => {
-      const likeIndexResponse = await likeIndex();
-      setLiked(likeIndexResponse.likeIds.includes(furnitureId));
-    };
-
     showApi();
     recommendationApi();
-    likeIndexApi();
   }, [furnitureId]);
 
   useEffect(() => {
@@ -90,7 +75,7 @@ export default function Page() {
     showToast(res.success, res.messages);
 
     if (res.success) {
-      setLiked(true);
+      setLikeIds([...likeIds, furnitureId]);
     }
   };
 
@@ -104,7 +89,7 @@ export default function Page() {
     showToast(res.success, res.messages);
 
     if (res.success) {
-      setLiked(false);
+      setLikeIds(likeIds.filter((id) => id !== furnitureId));
     }
   };
 
@@ -140,8 +125,7 @@ export default function Page() {
             </h3>
             <div className="grid grid-cols-[35%_65%] grid-rows-[42px_42px] gap-5">
               <OrderCounter
-                order={order}
-                setOrder={setOrder}
+                furnitureId={furniture.id}
                 stock={furniture.stock}
               />
               <ButtonWithIcon icon={<CartIcon />}>
@@ -149,9 +133,11 @@ export default function Page() {
               </ButtonWithIcon>
               <ButtonWithIcon
                 icon={<HeartIcon />}
-                backgroundColor={isLiked ? "var(--color-error)" : ""}
+                backgroundColor={
+                  likeIds.includes(furniture.id) ? "var(--color-error)" : ""
+                }
                 onClick={() => {
-                  if (isLiked) {
+                  if (likeIds.includes(furniture.id)) {
                     likeDestroyApi(furnitureId);
                   } else {
                     likeStoreApi(furnitureId);

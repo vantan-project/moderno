@@ -6,6 +6,9 @@ import { token } from "@/api/token";
 import { SideHeader } from "./items/side-header";
 import { UserControls } from "./items/user-controls";
 import { GlobalContext } from "@/hooks/use-global-state";
+import { CartCounts } from "@/type/cart-counts";
+import Cookies from "js-cookie";
+import { likeIndex } from "@/api/like-index";
 
 type Props = {
   children: React.ReactNode;
@@ -18,6 +21,9 @@ export function FixedWrapper({ children }: Props) {
     !pathname.startsWith("/sign-up"),
   ].every((condition) => condition === true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [cartCounts, setCartCounts] = useState<CartCounts>({});
+  const [likeIds, setLikeIds] = useState<number[]>([]);
+  const cartIds = Object.keys(cartCounts).map(Number);
 
   useEffect(() => {
     const tokenApi = async () => {
@@ -28,8 +34,46 @@ export function FixedWrapper({ children }: Props) {
     tokenApi();
   }, []);
 
+  useEffect(() => {
+    const cartCountsToken = Cookies.get("cartCounts");
+    if (cartCountsToken) {
+      setCartCounts(JSON.parse(cartCountsToken));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!cartCounts) return;
+    const cleanedCounts: CartCounts = {};
+    for (const key in cartCounts) {
+      if (cartCounts[key] > 0) {
+        cleanedCounts[Number(key)] = cartCounts[key];
+      }
+    }
+
+    Cookies.set("cartCounts", JSON.stringify(cleanedCounts));
+  }, [cartCounts]);
+
+  useEffect(() => {
+    const likeIndexApi = async () => {
+      const likeIndexResponse = await likeIndex();
+      setLikeIds(likeIndexResponse.likeIds);
+    };
+
+    likeIndexApi();
+  }, []);
+
   return (
-    <GlobalContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+    <GlobalContext.Provider
+      value={{
+        isLoggedIn,
+        setIsLoggedIn,
+        cartCounts,
+        setCartCounts,
+        cartIds,
+        likeIds,
+        setLikeIds,
+      }}
+    >
       <div className="fixed top-0 left-0 z-20">
         <SideHeader />
       </div>
