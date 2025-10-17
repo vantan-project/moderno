@@ -41,7 +41,7 @@ class OrderController extends Controller
     public function stockout(Request $request)
     {
         $orders = Order::with('furniture')
-            ->where('is_shipped', false)
+            ->where('is_completed', false)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -69,9 +69,9 @@ class OrderController extends Controller
         $authUser = request()->user();
         $currentPage = $request['currentPage'];
         $orders = $authUser->orders()
-          ->with('furniture')
-          ->where('is_shipped', true)
-          ->orderBy('created_at', 'desc');
+            ->with('furniture')
+            ->where('is_completed', true)
+            ->orderBy('created_at', 'desc');
         $PER_PAGE = 20;
         $orders = $orders->paginate($PER_PAGE, ['*'], 'page', $currentPage);
 
