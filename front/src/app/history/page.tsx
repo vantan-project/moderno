@@ -111,7 +111,7 @@ export default function Page() {
               <p>個数：&nbsp;{order.count}</p>
               <p>
                 {order.isShipped ? (
-                  <CheckIcon className="w-40 text-green-500" />
+                  <CheckIcon className="w-40 text-sccess" />
                 ) : (
                   <button
                     className="bg-white border border-error text-error rounded-lg py-2 w-40 cursor-pointer"
