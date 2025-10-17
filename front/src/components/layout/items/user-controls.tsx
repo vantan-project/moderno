@@ -6,10 +6,16 @@ import { LoginIcon } from "@/components/shared/icons/login-icon";
 import { UserIcon } from "@/components/shared/icons/user-icon";
 import { useGlobalContext } from "@/hooks/use-global-state";
 import { useRouter } from "next/navigation";
+import { Indicator } from "@mantine/core";
 
 export function UserControls() {
   const { isLoggedIn } = useGlobalContext();
   const router = useRouter();
+  const { cartCounts } = useGlobalContext();
+  const totalCount = Object.values(cartCounts).reduce(
+    (sum, count) => sum + count,
+    0
+  );
   const iconClassName = "w-8 h-8 hover:opacity-30";
   const handleLike = async () => {
     const tokenRes = await token();
@@ -29,8 +35,11 @@ export function UserControls() {
       <ButtonWithLabel onClick={handleLike} label="お気に入り">
         <HeartIcon className={iconClassName} />
       </ButtonWithLabel>
+
       <ButtonWithLabel onClick={handleCart} label="カート">
-        <CartIcon className={iconClassName} />
+        <Indicator label={totalCount} size={16} disabled={totalCount === 0}>
+          <CartIcon className={iconClassName} />
+        </Indicator>
       </ButtonWithLabel>
 
       {isLoggedIn ? (
