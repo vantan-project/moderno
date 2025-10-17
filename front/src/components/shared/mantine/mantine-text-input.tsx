@@ -7,6 +7,7 @@ export function MantineTextInput(props: TextInputProps) {
       classNames={{
         input: "!py-5 !border-none !rounded-full",
         section: "px-2",
+        ...props.classNames,
       }}
     />
   );

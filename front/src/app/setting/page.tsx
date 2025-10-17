@@ -16,8 +16,12 @@ import { set, useForm } from "react-hook-form";
 import { authIndex, AuthIndexResponse } from "@/api/auth-index";
 import { ConfirmButton } from "@/components/features/setting/confirm-button";
 import { PasswordUpdateButton } from "@/components/features/setting/password-update-button";
-import { isEqual } from "lodash";
+import _, { isEqual } from "lodash";
 import { authUpdate } from "@/api/auth-update";
+import { DeleteIcon } from "@/components/shared/icons/delete";
+import { AddIcon } from "@/components/shared/icons/add-icon";
+import { cardDestroy } from "@/api/card-destroy";
+import { CardStoreButton } from "@/components/features/setting/card-store-button";
 
 export default function Page() {
   const router = useRouter();
@@ -27,11 +31,13 @@ export default function Page() {
     useForm<AuthIndexResponse["auth"]>();
   const initialValuesRef = useRef<AuthIndexResponse["auth"] | null>(null);
   const [hasChanged, setHasChanged] = useState(false);
+  const [cards, setCards] = useState<AuthIndexResponse["auth"]["cards"]>([]);
 
   const indexApi = async () => {
     const res = await authIndex();
 
     initialValuesRef.current = res.auth;
+    setCards(res.auth.cards);
     reset(res.auth);
   };
 
@@ -57,6 +63,15 @@ export default function Page() {
     }
   };
 
+  const handleCardDestroy = async (cardId: number) => {
+    const res = await cardDestroy(cardId);
+    showToast(res.success, res.messages);
+
+    if (res.success) {
+      setCards(cards.filter((card) => card.id !== cardId));
+    }
+  };
+
   useEffect(() => {
     indexApi();
   }, [reset]);
@@ -64,7 +79,6 @@ export default function Page() {
   useEffect(() => {
     const subscription = watch((value) => {
       if (initialValuesRef.current) {
-        console.log(value, initialValuesRef.current);
         setHasChanged(!isEqual(value, initialValuesRef.current));
       }
     });
@@ -78,7 +92,10 @@ export default function Page() {
     const initialValues = initialValuesRef.current;
     const diffData = Object.keys(formData).reduce((acc, key) => {
       const typedKey = key as keyof AuthIndexResponse["auth"];
-      if (!isEqual(formData[typedKey], initialValues[typedKey])) {
+      if (
+        !isEqual(formData[typedKey], initialValues[typedKey]) &&
+        typedKey !== "cards"
+      ) {
         acc[typedKey] = formData[typedKey];
       }
       return acc;
@@ -103,7 +120,7 @@ export default function Page() {
   const buttonClassName = "rounded-lg py-2 w-48 cursor-pointer";
   return (
     <>
-      <div className="flex flex-col justify-center items-center h-[calc(100vh-192px)] gap-8 px-40">
+      <div className="flex flex-col justify-center items-center h-[calc(100vh-192px)] gap-8 px-20">
         <Image
           className="fixed top-0 left-0 w-full h-full"
           src="/setting.png"
@@ -113,9 +130,9 @@ export default function Page() {
         />
 
         <div
-          className={clsx(blurClassName, "grid grid-cols-2 p-4 pb-10 w-full")}
+          className={clsx(blurClassName, "grid grid-cols-3 p-4 pb-10 w-full")}
         >
-          <div className="pr-10 border-r border-gray-300">
+          <div className="px-4 border-r border-gray-300">
             <p className={titleClassName}>ユーザー情報</p>
 
             <div className={contentClassName}>
@@ -137,7 +154,7 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="pl-10">
+          <div className="px-4 border-r border-gray-300">
             <p className={titleClassName}>住所</p>
 
             <div className={contentClassName}>
@@ -176,6 +193,50 @@ export default function Page() {
                 placeholder="町名・番地"
                 {...register("streetAddress")}
               />
+            </div>
+          </div>
+
+          <div className="px-4">
+            <p className={titleClassName}>カード情報</p>
+            <div className="flex flex-col gap-4 overflow-y-auto h-[300px] [scrollbar-color:var(--color-void)_transparent] pr-1">
+              <CardStoreButton indexApi={indexApi} />
+              {cards.map((card, index) => (
+                <div
+                  key={index}
+                  className="relative group bg-core p-2 rounded-2xl overflow-hidden flex-shrink-0 h-[100px] flex flex-col justify-between"
+                >
+                  <p className="w-full border-b border-void">
+                    **********{card.last4}
+                  </p>
+
+                  <div>
+                    <div className="w-full flex justify-between">
+                      <p className="text-xs">カード名義</p>
+                      <p>
+                        {card.holderFirstName} {card.holderLastName}
+                      </p>
+                    </div>
+                    <div className="w-full flex justify-between">
+                      <p className="text-xs">有効期限</p>
+                      <p>
+                        {card.expMonth}/{card.expYear}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="hidden group-hover:block absolute w-full h-full bg-black/40 top-0 left-0 text-core">
+                    <div className="w-full h-full flex items-start justify-end pt-2 pr-2">
+                      <button
+                        className="flex gap-2 border border-core py-1 px-4 rounded-2xl items-center cursor-pointer"
+                        onClick={() => handleCardDestroy(card.id)}
+                      >
+                        <DeleteIcon className="w-4 h-4" />
+                        <p className="text-sm">削除する</p>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

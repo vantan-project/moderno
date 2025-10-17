@@ -12,104 +12,116 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    public function login(AuthLoginRequest $request)
-    {
-        $auth = $request["auth"];
+  public function login(AuthLoginRequest $request)
+  {
+    $auth = $request["auth"];
 
-        if (Auth::attempt(['email' => $auth['email'], 'password' => $auth['password']])) {
-            $authUser = request()->user();
+    if (Auth::attempt(['email' => $auth['email'], 'password' => $auth['password']])) {
+      $authUser = request()->user();
 
-            return response()->json([
-                'success' => true,
-                'messages' => ['ログインに成功しました。'],
-                'authToken' => $authUser->createToken('authToken')->plainTextToken,
-            ]);
-        }
-
-        return response()->json([
-            'success' => false,
-            'messages' => ['メールアドレスかパスワードが正しくありません。'],
-        ], 401);
+      return response()->json([
+        'success' => true,
+        'messages' => ['ログインに成功しました。'],
+        'authToken' => $authUser->createToken('authToken')->plainTextToken,
+      ]);
     }
 
-    public function signUp(AuthSignUpLoginRequest $request)
-    {
-        $auth = $request["auth"];
+    return response()->json([
+      'success' => false,
+      'messages' => ['メールアドレスかパスワードが正しくありません。'],
+    ], 401);
+  }
 
-        $user = User::create([
-            'name'     => $auth['name'],
-            'email'    => $auth['email'],
-            'password' => Hash::make($auth['password']),
-        ]);
+  public function signUp(AuthSignUpLoginRequest $request)
+  {
+    $auth = $request["auth"];
 
-        return response()->json([
-            'success' => true,
-            'messages' => ['ユーザー登録が完了しました。'],
-            'authToken' => $user->createToken('authToken')->plainTextToken,
-        ], 201);
-    }
+    $user = User::create([
+      'name'     => $auth['name'],
+      'email'    => $auth['email'],
+      'password' => Hash::make($auth['password']),
+    ]);
 
-    public function logout()
-    {
-        $authUser = request()->user();
+    return response()->json([
+      'success' => true,
+      'messages' => ['ユーザー登録が完了しました。'],
+      'authToken' => $user->createToken('authToken')->plainTextToken,
+    ], 201);
+  }
 
-        $authUser->currentAccessToken()->delete();
+  public function logout()
+  {
+    $authUser = request()->user();
 
-        return response()->json([
-            'success' => true,
-            'messages' => ['ログアウトしました。'],
-        ]);
-    }
+    $authUser->currentAccessToken()->delete();
 
-    public function index()
-    {
-        $authUser = Auth::user();
+    return response()->json([
+      'success' => true,
+      'messages' => ['ログアウトしました。'],
+    ]);
+  }
 
-        return response()->json([
-            'success' => true,
-            'auth' => [
-                'name' => $authUser->name,
-                'email' => $authUser->email,
-                'postalCode' => $authUser->postal_code ?? "",
-                'prefecture' => $authUser->prefecture ?? "",
-                'city' => $authUser->city ?? "",
-                'streetAddress' => $authUser->street_address ?? "",
-            ],
-        ]);
-    }
+  public function index()
+  {
+    $authUser = request()->user();
 
-    public function update(AuthUpdateRequest $request)
-    {
-        $auth = $request["auth"];
-        $authUser = $request->user();
+    return response()->json([
+      'success' => true,
+      'auth' => [
+        'name' => $authUser->name,
+        'email' => $authUser->email,
+        'postalCode' => $authUser->postal_code ?? "",
+        'prefecture' => $authUser->prefecture ?? "",
+        'city' => $authUser->city ?? "",
+        'streetAddress' => $authUser->street_address ?? "",
+        'cards' => $authUser->cards->sortByDesc('created_at')->map(function ($card) {
+          return [
+            'id' => $card->id,
+            'last4' => $card->last4,
+            'expYear' => $card->exp_year,
+            'expMonth' => $card->exp_month,
+            'holderFirstName' => $card->holder_first_name,
+            'holderLastName' => $card->holder_last_name,
+          ];
+        })
+        ->values()
+        ->toArray(),
+      ],
+    ]);
+  }
 
-        $updateData = [];
+  public function update(AuthUpdateRequest $request)
+  {
+    $auth = $request["auth"];
+    $authUser = $request->user();
 
-        if (isset($auth['name'])) $updateData['name'] = $auth['name'];
-        if (isset($auth['email'])) $updateData['email'] = $auth['email'];
-        if (!empty($auth['password'])) $updateData['password'] = Hash::make($auth['password']);
-        if (isset($auth['postalCode'])) $updateData['postal_code'] = $auth['postalCode'];
-        if (isset($auth['prefecture'])) $updateData['prefecture'] = $auth['prefecture'];
-        if (isset($auth['city'])) $updateData['city'] = $auth['city'];
-        if (isset($auth['streetAddress'])) $updateData['street_address'] = $auth['streetAddress'];
+    $updateData = [];
 
-        $authUser->fill($updateData)->save();
+    if (isset($auth['name'])) $updateData['name'] = $auth['name'];
+    if (isset($auth['email'])) $updateData['email'] = $auth['email'];
+    if (!empty($auth['password'])) $updateData['password'] = Hash::make($auth['password']);
+    if (isset($auth['postalCode'])) $updateData['postal_code'] = $auth['postalCode'];
+    if (isset($auth['prefecture'])) $updateData['prefecture'] = $auth['prefecture'];
+    if (isset($auth['city'])) $updateData['city'] = $auth['city'];
+    if (isset($auth['streetAddress'])) $updateData['street_address'] = $auth['streetAddress'];
 
-        return response()->json([
-            'success' => true,
-            'messages' => ['ユーザー情報を更新しました。'],
-        ]);
-    }
+    $authUser->fill($updateData)->save();
 
-    public function destroy()
-    {
-        $authUser = request()->user();
+    return response()->json([
+      'success' => true,
+      'messages' => ['ユーザー情報を更新しました。'],
+    ]);
+  }
 
-        $authUser->delete();
+  public function destroy()
+  {
+    $authUser = request()->user();
 
-        return response()->json([
-            'success' => true,
-            'messages' => ['ユーザーアカウントを削除しました。'],
-        ]);
-    }
+    $authUser->delete();
+
+    return response()->json([
+      'success' => true,
+      'messages' => ['ユーザーアカウントを削除しました。'],
+    ]);
+  }
 }

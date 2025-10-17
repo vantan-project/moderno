@@ -10,6 +10,14 @@ export type AuthIndexResponse = {
     prefecture: string;
     city: string;
     streetAddress: string;
+    cards: {
+      id: number;
+      last4: string;
+      expMonth: number;
+      expYear: number;
+      holderFirstName: string;
+      holderLastName: string;
+    }[];
   };
 };
 

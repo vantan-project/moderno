@@ -10,57 +10,65 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens;
+  /** @use HasFactory<\Database\Factories\UserFactory> */
+  use HasFactory, Notifiable, HasApiTokens;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'postal_code',
-        'prefecture',
-        'city',
-        'street_address',
-        'is_admin',
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var list<string>
+   */
+  protected $fillable = [
+    'name',
+    'email',
+    'password',
+    'postal_code',
+    'prefecture',
+    'city',
+    'street_address',
+    'is_admin',
+  ];
+
+  /**
+   * The attributes that should be hidden for serialization.
+   *
+   * @var list<string>
+   */
+  protected $hidden = [
+    'password',
+    'remember_token',
+  ];
+
+  /**
+   * Get the attributes that should be cast.
+   *
+   * @return array<string, string>
+   */
+  protected function casts(): array
+  {
+    return [
+      'email_verified_at' => 'datetime',
+      'password' => 'hashed',
     ];
+  }
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+  public function orders()
+  {
+    return $this->hasMany(Order::class);
+  }
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+  public function likes()
+  {
+    return $this->hasMany(Like::class);
+  }
 
-    public function orders() {
-        return $this->hasMany(Order::class);
-    }
+  public function likeFurnitures()
+  {
+    return $this->belongsToMany(Furniture::class, 'likes')->withTimestamps();
+  }
 
-    public function likes() {
-        return $this->hasMany(Like::class);
-    }
-
-    public function likeFurnitures(){
-        return $this->belongsToMany(Furniture::class, 'likes')->withTimestamps();
-    }
+  public function cards()
+  {
+    return $this->hasMany(Card::class);
+  }
 }
