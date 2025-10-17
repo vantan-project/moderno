@@ -21,12 +21,6 @@ export function UserControls() {
     router.push("/like");
   };
   const handleCart = async () => {
-    const tokenRes = await token();
-    if (!tokenRes.success) {
-      router.push("/login");
-      return;
-    }
-
     router.push("/cart");
   };
 

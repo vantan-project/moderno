@@ -250,12 +250,14 @@ class FurnitureController extends Controller
 
     return response()->json([
       'success' => true,
-      'furnitures' => $furnitures->map(function ($furniture) {
+      'furnitures' => $furnitures->mapWithKeys(function ($furniture) {
         return [
-          'id' => $furniture->id,
-          'name' => $furniture->name,
-          'imageUrl' => $furniture->image_url,
-          'price' => $furniture->price,
+          $furniture->id => [
+            'name' => $furniture->name,
+            'imageUrl' => $furniture->image_url,
+            'price' => $furniture->price,
+            'stock' => $furniture->stock,
+          ],
         ];
       }),
     ]);

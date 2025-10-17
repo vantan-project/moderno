@@ -43,10 +43,13 @@ export function FixedWrapper({ children }: Props) {
 
   useEffect(() => {
     if (!cartCounts) return;
+
     const cleanedCounts: CartCounts = {};
+
     for (const key in cartCounts) {
-      if (cartCounts[key] > 0) {
-        cleanedCounts[Number(key)] = cartCounts[key];
+      const id = Number(key);
+      if (!Number.isNaN(id) && cartCounts[key] > 0) {
+        cleanedCounts[id] = cartCounts[key];
       }
     }
 
