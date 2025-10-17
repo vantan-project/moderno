@@ -2,15 +2,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { ButtonWithLabel } from "@/components/shared/button-with-label";
 import { HeartIcon } from "@/components/shared/icons/heart-icon";
-import { CartIcon } from "@/components/shared/icons/cart-icon";
 import { EditIcon } from "@/components/shared/icons/edit-icon";
 import { likeStore } from "@/api/like-store";
 import { showToast } from "@/utils/show-toast";
 import clsx from "clsx";
 import { likeDestroy } from "@/api/like-destroy";
 import { token } from "@/api/token";
-import { use } from "react";
 import { useRouter } from "next/navigation";
+import { OrderCounter } from "./order-counter";
+import { useGlobalContext } from "@/hooks/use-global-state";
 
 type Props = {
   furnitures: Array<{
@@ -18,19 +18,14 @@ type Props = {
     name: string;
     price: number;
     imageUrl: string;
+    stock: number;
   }>;
   isAdmin: boolean;
-  likeIds: number[];
-  setLikeIds: React.Dispatch<React.SetStateAction<number[]>>;
 };
 
-export function GalleryLayout({
-  furnitures,
-  isAdmin,
-  likeIds,
-  setLikeIds,
-}: Props) {
+export function GalleryLayout({ furnitures, isAdmin }: Props) {
   const router = useRouter();
+  const { likeIds, setLikeIds } = useGlobalContext();
 
   const likeStoreApi = async (furnitureId: number) => {
     const authToken = await token();
@@ -42,7 +37,7 @@ export function GalleryLayout({
     showToast(res.success, res.messages);
 
     if (res.success) {
-      setLikeIds((prev) => [...prev, furnitureId]);
+      setLikeIds([...likeIds, furnitureId]);
     }
   };
 
@@ -56,7 +51,7 @@ export function GalleryLayout({
     showToast(res.success, res.messages);
 
     if (res.success) {
-      setLikeIds((prev) => prev.filter((id) => id !== furnitureId));
+      setLikeIds(likeIds.filter((id) => id !== furnitureId));
     }
   };
 
@@ -91,7 +86,13 @@ export function GalleryLayout({
             </p>
           </Link>
 
-          <div className="flex gap-8">
+          <div className="flex items-center justify-between gap-8">
+            <div className="h-10 w-1/2">
+              <OrderCounter
+                furnitureId={furniture.id}
+                stock={furniture.stock}
+              />
+            </div>
             <ButtonWithLabel
               onClick={() => {
                 if (likeIds.includes(furniture.id)) {
@@ -108,9 +109,6 @@ export function GalleryLayout({
                   "w-8 h-8 hover:opacity-30"
                 )}
               />
-            </ButtonWithLabel>
-            <ButtonWithLabel onClick={() => {}} label="カート">
-              <CartIcon className="w-8 h-8 hover:opacity-30" />
             </ButtonWithLabel>
             {isAdmin && (
               <ButtonWithLabel onClick={() => {}} label="編集する">

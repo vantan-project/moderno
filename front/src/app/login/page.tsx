@@ -5,17 +5,14 @@ import { LockIcon } from "@/components/shared/icons/lock-icon";
 import { MailIcon } from "@/components/shared/icons/mail-icon";
 import { MantinePasswordInput } from "@/components/shared/mantine/mantine-password-input";
 import { MantineTextInput } from "@/components/shared/mantine/mantine-text-input";
-import { showToast } from "@/utils/show-toast";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { useGlobalContext } from "@/hooks/use-global-state";
 
 export default function SignUpPage() {
   const router = useRouter();
-  const { setIsLoggedIn } = useGlobalContext();
   const {
     register,
     handleSubmit,
@@ -27,11 +24,8 @@ export default function SignUpPage() {
 
     if (res.success) {
       Cookies.set("authToken", res.authToken);
-      router.push("/");
+      location.href = "/";
     }
-
-    await showToast(res.success, res.messages);
-    setIsLoggedIn(res.success);
   };
 
   return (

@@ -15,6 +15,7 @@ export type FurnitureIndexResponse = {
     name: string;
     imageUrl: string;
     price: number;
+    stock: number;
   }[];
   lastPage: number;
 };
