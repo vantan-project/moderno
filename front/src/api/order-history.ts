@@ -25,7 +25,7 @@ export type OrderHistoryResponse = {
 export function orderHistory({
   currentPage,
 }: OrderHistoryRequest): Promise<OrderHistoryResponse> {
-  const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/order/History`;
+  const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/order/history`;
   const authToken = Cookies.get("authToken");
 
   return axios
