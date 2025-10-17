@@ -113,7 +113,12 @@ export default function Page() {
               </div>
             </div>
             <div className="flex gap-4">
-              <div className="w-42">
+              <div
+                className={clsx(
+                  "w-42 relative",
+                  totalCount === 0 && "opacity-50"
+                )}
+              >
                 <ButtonWithIcon
                   color="var(--color-error)"
                   backgroundColor="white"
@@ -123,12 +128,23 @@ export default function Page() {
                 >
                   一括削除
                 </ButtonWithIcon>
+                {totalCount === 0 && (
+                  <div className="absolute top-0 left-0 w-full h-full hover:cursor-not-allowed z-10" />
+                )}
               </div>
 
-              <div className="w-42">
+              <div
+                className={clsx(
+                  "w-42 relative",
+                  totalCount === 0 && "opacity-50"
+                )}
+              >
                 <ButtonWithIcon icon={<CartIcon />} onClick={open}>
                   購入に進む
                 </ButtonWithIcon>
+                {totalCount === 0 && (
+                  <div className="absolute top-0 left-0 w-full h-full hover:cursor-not-allowed z-10" />
+                )}
               </div>
             </div>
           </div>
