@@ -1,3 +1,4 @@
+import { AuthIndexResponse } from "@/api/auth-index";
 import { CartCounts } from "@/type/cart-counts";
 import { createContext, useContext } from "react";
 
@@ -9,6 +10,8 @@ type GlobalContextType = {
   cartIds: number[];
   likeIds: number[];
   setLikeIds: (likeIds: number[]) => void;
+  user: AuthIndexResponse["auth"];
+  setUser: (user: AuthIndexResponse["auth"]) => void;
   // TODO: isAdminの追加
 };
 

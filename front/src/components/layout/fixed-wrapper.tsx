@@ -9,6 +9,7 @@ import { GlobalContext } from "@/hooks/use-global-state";
 import { CartCounts } from "@/type/cart-counts";
 import Cookies from "js-cookie";
 import { likeIndex } from "@/api/like-index";
+import { authIndex, AuthIndexResponse } from "@/api/auth-index";
 
 type Props = {
   children: React.ReactNode;
@@ -20,6 +21,15 @@ export function FixedWrapper({ children }: Props) {
     !pathname.startsWith("/login"),
     !pathname.startsWith("/sign-up"),
   ].every((condition) => condition === true);
+  const [user, setUser] = useState<AuthIndexResponse["auth"]>({
+    name: "",
+    email: "",
+    postalCode: "",
+    prefecture: "",
+    city: "",
+    streetAddress: "",
+    cards: [],
+  });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [cartCounts, setCartCounts] = useState<CartCounts>({});
   const [likeIds, setLikeIds] = useState<number[]>([]);
@@ -33,6 +43,12 @@ export function FixedWrapper({ children }: Props) {
 
     tokenApi();
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      authIndex().then((res) => setUser(res.auth));
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     const cartCountsToken = Cookies.get("cartCounts");
@@ -75,6 +91,8 @@ export function FixedWrapper({ children }: Props) {
         cartIds,
         likeIds,
         setLikeIds,
+        user,
+        setUser,
       }}
     >
       <div className="fixed top-0 left-0 z-20">
