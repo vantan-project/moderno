@@ -12,32 +12,30 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { authDestroy } from "@/api/auth-destroy";
 import { useGlobalContext } from "@/hooks/use-global-state";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { authIndex, AuthIndexResponse } from "@/api/auth-index";
 import { ConfirmButton } from "@/components/features/setting/confirm-button";
 import { PasswordUpdateButton } from "@/components/features/setting/password-update-button";
-import _, { isEqual } from "lodash";
+import { isEqual } from "lodash";
 import { authUpdate } from "@/api/auth-update";
 import { DeleteIcon } from "@/components/shared/icons/delete";
-import { AddIcon } from "@/components/shared/icons/add-icon";
 import { cardDestroy } from "@/api/card-destroy";
 import { CardStoreButton } from "@/components/features/setting/card-store-button";
 
 export default function Page() {
   const router = useRouter();
-  const { setIsLoggedIn } = useGlobalContext();
+  const { setIsLoggedIn, user, setUser } = useGlobalContext();
 
   const { register, handleSubmit, reset, setValue, watch } =
     useForm<AuthIndexResponse["auth"]>();
   const initialValuesRef = useRef<AuthIndexResponse["auth"] | null>(null);
   const [hasChanged, setHasChanged] = useState(false);
-  const [cards, setCards] = useState<AuthIndexResponse["auth"]["cards"]>([]);
 
   const indexApi = async () => {
     const res = await authIndex();
 
     initialValuesRef.current = res.auth;
-    setCards(res.auth.cards);
+    setUser(res.auth);
     reset(res.auth);
   };
 
@@ -68,7 +66,7 @@ export default function Page() {
     showToast(res.success, res.messages);
 
     if (res.success) {
-      setCards(cards.filter((card) => card.id !== cardId));
+      indexApi();
     }
   };
 
@@ -107,7 +105,7 @@ export default function Page() {
       });
       showToast(res.success, res.messages);
 
-      if (res) indexApi();
+      if (res.success) indexApi();
     };
 
     updateApi();
@@ -200,7 +198,7 @@ export default function Page() {
             <p className={titleClassName}>カード情報</p>
             <div className="flex flex-col gap-4 overflow-y-auto h-[300px] [scrollbar-color:var(--color-void)_transparent] pr-1">
               <CardStoreButton indexApi={indexApi} />
-              {cards.map((card, index) => (
+              {user.cards.map((card, index) => (
                 <div
                   key={index}
                   className="relative group bg-core p-2 rounded-2xl overflow-hidden flex-shrink-0 h-[100px] flex flex-col justify-between"
