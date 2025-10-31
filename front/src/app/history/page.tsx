@@ -73,7 +73,7 @@ export default function Page() {
               <div className="grid grid-cols-5 items-center gap-10">
                 <p>{order.furniture.name}</p>
                 <p>注文日：{order.createdAt}</p>
-                <p>金額：&nbsp;¥1,000</p>
+                <p>金額：&nbsp;{order.furniture.price * order.count}</p>
                 <p>個数：&nbsp;{order.count}</p>
                 <button
                   className="bg-white border border-error text-error rounded-lg py-2 w-40 cursor-pointer"
@@ -107,7 +107,7 @@ export default function Page() {
             <div className="grid grid-cols-5 items-center gap-10">
               <p>{order.furniture.name}</p>
               <p>注文日：{order.createdAt}</p>
-              <p>金額：&nbsp;¥1,000</p>
+              <p>金額：&nbsp;{order.furniture.price * order.count}</p>
               <p>個数：&nbsp;{order.count}</p>
               <p>
                 {order.isShipped ? (

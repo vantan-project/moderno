@@ -9,6 +9,7 @@ export type OrderStockoutResponse = {
       id: number;
       name: string;
       imageUrl: string;
+      price: number;
     };
     count: number;
     isShipped: boolean;
