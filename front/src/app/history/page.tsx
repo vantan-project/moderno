@@ -78,7 +78,7 @@ export default function Page() {
                 <button
                   className="bg-white border border-error text-error rounded-lg py-2 w-40 cursor-pointer"
                   onClick={() => {
-                    router.push(`/furniture/${order.id}`);
+                    router.push(`/furniture/${order.furniture.id}`);
                   }}
                 >
                   再注文
