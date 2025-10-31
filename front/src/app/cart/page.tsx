@@ -28,15 +28,8 @@ export default function Page() {
     FurnitureCartResponse["furnitures"]
   >({});
   const [cards, setCards] = useState<CardIndexResponse["cards"]>({});
-  const {
-    cartCounts,
-    setCartCounts,
-    cartIds,
-    likeIds,
-    setLikeIds,
-    user,
-    setUser,
-  } = useGlobalContext();
+  const { cartCounts, setCartCounts, cartIds, likeIds, setLikeIds, user } =
+    useGlobalContext();
   const [opened, { open, close }] = useDisclosure(false);
   const carts = Object.entries(cartCounts)
     .filter(
