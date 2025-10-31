@@ -28,8 +28,15 @@ export default function Page() {
     FurnitureCartResponse["furnitures"]
   >({});
   const [cards, setCards] = useState<CardIndexResponse["cards"]>({});
-  const { cartCounts, setCartCounts, cartIds, likeIds, setLikeIds } =
-    useGlobalContext();
+  const {
+    cartCounts,
+    setCartCounts,
+    cartIds,
+    likeIds,
+    setLikeIds,
+    user,
+    setUser,
+  } = useGlobalContext();
   const [opened, { open, close }] = useDisclosure(false);
   const carts = Object.entries(cartCounts)
     .filter(
@@ -97,16 +104,20 @@ export default function Page() {
       router.push("/login");
     }
 
-    const orders: OrderStoreRequest["orders"] = carts.map((cart) => ({
-      furnitureId: cart.id,
-      count: cart.count,
-    }));
-    const res = await orderStore({ orders });
-    showToast(res.success, res.messages);
+    if (!cardId) {
+      showToast(false, ["カードが選択されていません"]);
+    } else {
+      const orders: OrderStoreRequest["orders"] = carts.map((cart) => ({
+        furnitureId: cart.id,
+        count: cart.count,
+      }));
+      const res = await orderStore({ orders });
+      showToast(res.success, res.messages);
 
-    if (res.success) {
-      setCartCounts({});
-      router.push("/");
+      if (res.success) {
+        setCartCounts({});
+        router.push("/");
+      }
     }
   };
 
@@ -201,7 +212,38 @@ export default function Page() {
                   totalCount === 0 && "opacity-50"
                 )}
               >
-                <ButtonWithIcon icon={<CartIcon />} onClick={open}>
+                <ButtonWithIcon
+                  icon={<CartIcon />}
+                  onClick={() => {
+                    const {
+                      postalCode,
+                      prefecture,
+                      city,
+                      streetAddress,
+                      cards,
+                    } = user;
+
+                    const missingFields: string[] = [];
+
+                    if (!postalCode || !prefecture || !city || !streetAddress) {
+                      missingFields.push("住所");
+                    }
+
+                    if (!cards?.length) {
+                      missingFields.push("カード情報");
+                    }
+
+                    if (missingFields.length > 0) {
+                      const message = `${missingFields.join(
+                        "と"
+                      )}が入力されていません`;
+                      showToast(false, [message]);
+                      router.push("/setting");
+                    } else {
+                      open();
+                    }
+                  }}
+                >
                   購入に進む
                 </ButtonWithIcon>
                 {totalCount === 0 && (
