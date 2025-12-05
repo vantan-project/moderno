@@ -136,6 +136,9 @@ export default function Page() {
                 backgroundColor={
                   likeIds.includes(furniture.id) ? "var(--color-error)" : ""
                 }
+                borderColor={
+                  likeIds.includes(furniture.id) ? "var(--color-error)" : ""
+                }
                 onClick={() => {
                   if (likeIds.includes(furniture.id)) {
                     likeDestroyApi(furnitureId);
