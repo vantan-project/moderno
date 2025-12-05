@@ -102,7 +102,7 @@ export default function FurnitureForm() {
               className="border p-2 mb-8 rounded-sm"
               {...register("furniture.categoryId")}
             >
-              <option value="">選択してください</option>
+              <option value=""></option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
