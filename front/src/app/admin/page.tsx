@@ -12,7 +12,8 @@ export default function FurnitureForm() {
   const [categories, setCategories] = useState<
     CategoryIndexResponse["categories"]
   >([]);
-  const { register, handleSubmit, reset } = useForm<FurnitureStoreRequest>();
+  const { register, handleSubmit, reset, setValue } =
+    useForm<FurnitureStoreRequest>();
 
   const onSubmit = async (data: FurnitureStoreRequest) => {
     const res = await furnitureStore(data);
@@ -39,6 +40,7 @@ export default function FurnitureForm() {
     if (file) {
       const url = URL.createObjectURL(file);
       setPreview(url);
+      setValue("furniture.imageFile", file);
     }
   };
 
