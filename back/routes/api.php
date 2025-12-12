@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TransitionController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -48,6 +49,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/', [CardController::class, 'index']);
     Route::post('/', [CardController::class, 'store']);
     Route::delete('/{id}', [CardController::class, 'destroy']);
+  });
+
+  Route::prefix('/user')->group(function () {
+    Route::get('/', [UserController::class, 'index']);
   });
 });
 
