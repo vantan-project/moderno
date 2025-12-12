@@ -111,7 +111,12 @@ export function GalleryLayout({ furnitures, isAdmin }: Props) {
               />
             </ButtonWithLabel>
             {isAdmin && (
-              <ButtonWithLabel onClick={() => {}} label="編集する">
+              <ButtonWithLabel
+                onClick={() => {
+                  router.push(`/furniture/${furniture.id}/edit`);
+                }}
+                label="編集する"
+              >
                 <EditIcon className="w-8 h-8 hover:opacity-30" />
               </ButtonWithLabel>
             )}
