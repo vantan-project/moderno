@@ -19,7 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::prefix('furniture')->group(function () {
     Route::post('/', [FurnitureController::class, 'store']);
     Route::get('/like', [FurnitureController::class, 'like']);
-    Route::patch('/{id}', [FurnitureController::class, 'update']);
+    Route::post('/{id}', [FurnitureController::class, 'update']);
     Route::delete('/{id}', [FurnitureController::class, 'destroy']);
   });
 
