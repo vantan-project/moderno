@@ -8,12 +8,14 @@ import { useForm } from "react-hook-form";
 import { showToast } from "@/utils/show-toast";
 import { FolderPlusIcon } from "@/components/shared/icons/folder-plus-icon";
 import { FurnitureShowResponse } from "@/api/furniture-show";
+import { useRouter } from "next/navigation";
 
 type Props = {
   furniture?: FurnitureShowResponse["furniture"];
 };
 
 export default function FurnitureForm({ furniture }: Props) {
+  const router = useRouter();
   const [categories, setCategories] = useState<
     CategoryIndexResponse["categories"]
   >([]);
@@ -27,6 +29,7 @@ export default function FurnitureForm({ furniture }: Props) {
     const res = await furnitureUpdate(furnitureId, data);
     if (res.success) {
       reset();
+      router.push(`/${data.furniture.categoryId}`);
     }
 
     await showToast(res.success, res.messages);
