@@ -58,6 +58,7 @@ class FurnitureController extends Controller
         'imageUrl' => $furniture->image_url,
         'detail' => $furniture->detail,
         'price' => $furniture->price,
+        'categoryId' => $furniture->category_id,
         'categoryName' => $furniture->category->name,
         'stock' => $furniture->stock,
       ]
