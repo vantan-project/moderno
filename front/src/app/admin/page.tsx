@@ -5,7 +5,7 @@ import { FurnitureStoreRequest, furnitureStore } from "@/api/furniture-store";
 import { useEffect, useState } from "react";
 import { categoryIndex, CategoryIndexResponse } from "@/api/category-index";
 import { showToast } from "@/utils/show-toast";
-import { UserIcon } from "@/components/shared/icons/user-icon";
+import { SquarePenIcon } from "@/components/shared/icons/square-pen-icon";
 import { FolderPlusIcon } from "@/components/shared/icons/folder-plus-icon";
 
 export default function FurnitureForm() {
@@ -47,8 +47,8 @@ export default function FurnitureForm() {
   return (
     <div className="h-full [&>*]:py-4 [&>*]:px-2  mx-20 my-10">
       <h2 className="flex items-center gap-2 text-xl font-bold text-void border-b border-void">
-        <UserIcon />
-        管理者
+        <SquarePenIcon />
+        商品追加
       </h2>
       <form
         className="flex flex-col w-full m-0 p-8 [&_input]:border [&_input]:p-2 [&_input]:mb-4 [&_input]:rounded-sm"
