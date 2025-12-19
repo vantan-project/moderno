@@ -2,7 +2,7 @@ type Props = {
   className?: string;
 };
 
-export function UserRoundIcon({ className }: Props) {
+export function BoxIcon({ className }: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -16,8 +16,10 @@ export function UserRoundIcon({ className }: Props) {
       strokeLinejoin="round"
       className={className}
     >
-      <circle cx="12" cy="8" r="5" />
-      <path d="M20 21a8 8 0 0 0-16 0" />
+      <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" />
+      <path d="M12 22V12" />
+      <polyline points="3.29 7 12 12 20.71 7" />
+      <path d="m7.5 4.27 9 5.15" />
     </svg>
   );
 }

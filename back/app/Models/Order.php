@@ -6,15 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = [
-        'user_id',
-        'furniture_id',
-        'count',
-        'is_shipped',
-        'is_completed',
-    ];
+  protected $fillable = [
+    'user_id',
+    'furniture_id',
+    'count',
+    'is_shipped',
+    'is_completed',
+  ];
 
-    public function furniture() {
-        return $this->belongsTo(Furniture::class);
-    }
+  public function furniture()
+  {
+    return $this->belongsTo(Furniture::class);
+  }
+
+  public function user()
+  {
+    return $this->belongsTo(User::class);
+  }
 }

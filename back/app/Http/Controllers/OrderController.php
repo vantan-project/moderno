@@ -13,8 +13,9 @@ class OrderController extends Controller
   public function index(Request $request)
   {
     $currentPage = $request['currentPage'];
-    $orders = Order::with('furniture')
-      ->where('is_shipped', true);
+    $orders = Order::with(['furniture', 'user'])
+      ->where('is_completed', true)
+      ->orderBy('created_at', 'desc');
     $PER_PAGE = 20;
     $orders = $orders->paginate($PER_PAGE, ['*'], 'page', $currentPage);
 
@@ -28,10 +29,19 @@ class OrderController extends Controller
               'id' => $order->furniture->id,
               'name' => $order->furniture->name,
               'imageUrl' => $order->furniture->image_url,
+              'price' => $order->furniture->price,
+            ],
+            'user' => [
+              'name' => $order->user->name,
+              'postalCode' => $order->user->postal_code,
+              'prefecture' => $order->user->prefecture,
+              'city' => $order->user->city,
+              'streetAddress' => $order->user->street_address,
             ],
             'count' => $order->count,
             'isShipped' => (bool) $order->is_shipped,
             'isCompleted' => (bool) $order->is_completed,
+            'createdAt' => $order->created_at?->format('Y / m / d') ?? '',
           ];
         }),
       'lastPage' => $orders->lastPage(),
