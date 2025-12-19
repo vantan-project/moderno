@@ -13,12 +13,28 @@ class OrderController extends Controller
   public function index(Request $request)
   {
     $currentPage = $request['currentPage'];
+    $keyword = $request['search.keyword'];
     $orders = Order::with(['furniture', 'user'])
       ->where('is_completed', true)
+      ->when($keyword, function ($q) use ($keyword) {
+        $q->where(function ($q) use ($keyword) {
+          $q->whereHas('furniture', function ($q) use ($keyword) {
+            $q->where('name', 'like', "%{$keyword}%");
+          })
+            ->orWhereHas('user', function ($q) use ($keyword) {
+              $q->where('name', 'like', "%{$keyword}%")
+                ->orWhere('postal_code', 'like', "%{$keyword}%")
+                ->orWhere('prefecture', 'like', "%{$keyword}%")
+                ->orWhere('city', 'like', "%{$keyword}%")
+                ->orWhere('street_address', 'like', "%{$keyword}%");
+            });
+        });
+      })
       ->orderBy('created_at', 'desc');
     $PER_PAGE = 20;
     $orders = $orders->paginate($PER_PAGE, ['*'], 'page', $currentPage);
 
+    // TODO: furniture.name, user.name, user.postalCode, user.prefecture, user.city, user.streetAddressをsearch.keywordでlike検索したい
     return response()->json([
       'success' => true,
       'orders' => collect($orders->items())
