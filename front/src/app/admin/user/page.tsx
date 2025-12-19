@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   userIndex,
   UserIndexResponse,
@@ -14,11 +14,9 @@ import { MapPinHouseIcon } from "@/components/shared/icons/map-pin-house-icon";
 import { SearchIcon } from "@/components/shared/icons/search-icon";
 
 export default function Page() {
-  const params = useParams();
   const router = useRouter();
   const [user, setUser] = useState<UserIndexResponse["users"]>([]);
 
-  const userId = params?.userId;
   const [search, setSearch] = useState<UserIndexRequest["search"]>({
     keyword: "",
   });
