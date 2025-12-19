@@ -102,12 +102,11 @@ export default function Page() {
                       if (match) {
                         return (
                           <>
-                            <span>{match[1]}</span> {/* 町名 */} /{" "}
-                            <span>{match[2]}</span> {/* 番地 */}
+                            <span>{match[1]}</span> {} / <span>{match[2]}</span>
                           </>
                         );
                       }
-                      return user.streetAddress; // 分割できない場合はそのまま
+                      return user.streetAddress;
                     })()}
                   </>
                 ) : (
