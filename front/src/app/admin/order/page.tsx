@@ -78,18 +78,6 @@ export default function () {
             ></input>
             <SearchIcon className="absolute right-2  top-4 bg-gray-100" />
           </div>
-          {/* <div className="relative w-50">
-            <input
-              type="text"
-              placeholder="検索する"
-              className="rounded px-2 py-2 text-sm bg-gray-100 w-70 placeholder-void"
-              value={search.keyword}
-              onChange={(e) =>
-                setSearch({ ...search, keyword: e.target.value })
-              }
-            ></input>
-            <SearchIcon className="absolute right-2  top-4 bg-gray-100" />
-          </div> */}
         </div>
         {orders.map((order) => (
           <div key={order.id} className="[&>*]:py-4 [&>*]:px-2">
