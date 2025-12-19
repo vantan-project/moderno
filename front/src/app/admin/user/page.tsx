@@ -93,8 +93,17 @@ export default function Page() {
               <p>{user.name}</p>
               <p>{user.email}</p>
               <p>
-                〒{user.postalCode} / {user.prefecture} / {user.city} /{" "}
-                {user.streetAddress}
+                {user.postalCode &&
+                user.prefecture &&
+                user.city &&
+                user.streetAddress ? (
+                  <>
+                    〒{user.postalCode} / {user.prefecture} / {user.city} /{" "}
+                    {user.streetAddress}
+                  </>
+                ) : (
+                  "未設定"
+                )}
               </p>
               <button
                 className="bg-white border border-void rounded-lg py-2 w-50 cursor-pointer"
