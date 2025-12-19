@@ -97,7 +97,18 @@ export default function Page() {
                 user.streetAddress ? (
                   <>
                     〒{user.postalCode} / {user.prefecture} / {user.city} /{" "}
-                    {user.streetAddress}
+                    {(() => {
+                      const match = user.streetAddress.match(/^(.+?)(\d.*)$/);
+                      if (match) {
+                        return (
+                          <>
+                            <span>{match[1]}</span> {/* 町名 */} /{" "}
+                            <span>{match[2]}</span> {/* 番地 */}
+                          </>
+                        );
+                      }
+                      return user.streetAddress; // 分割できない場合はそのまま
+                    })()}
                   </>
                 ) : (
                   "未設定"
