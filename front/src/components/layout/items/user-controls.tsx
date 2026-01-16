@@ -16,8 +16,7 @@ import { BoxIcon } from "@/components/shared/icons/box-icon";
 import { SquarePenIcon } from "@/components/shared/icons/square-pen-icon";
 
 export function UserControls() {
-  const [isAdmin, setIsAdmin] = useState(false);
-  const { isLoggedIn, cartCounts } = useGlobalContext();
+  const { isLoggedIn, isAdmin, cartCounts } = useGlobalContext();
   const router = useRouter();
   const totalCount = Object.values(cartCounts).reduce(
     (sum, count) => sum + count,
@@ -69,10 +68,6 @@ export function UserControls() {
     router.push("/admin");
   };
 
-  useEffect(() => {
-    setIsAdmin(!!Number(Cookies.get("isAdmin")));
-  }, [isAdmin]);
-
   return (
     <div className="flex items-center gap-2 bg-[rgba(255,255,255,0.7)] backdrop-filter-[blur(8px)] text-void rounded-2xl py-2 px-5 [&>*]:w-16">
       {isAdmin ? (
@@ -110,23 +105,19 @@ export function UserControls() {
               <CartIcon className={iconClassName} />
             </Indicator>
           </ButtonWithLabel>
-
-          {isLoggedIn ? (
-            <ButtonWithLabel
-              onClick={() => router.push("/setting")}
-              label="ユーザー設定"
-            >
-              <UserIcon className={iconClassName} />
-            </ButtonWithLabel>
-          ) : (
-            <ButtonWithLabel
-              onClick={() => router.push("/login")}
-              label="ログイン"
-            >
-              <LoginIcon className={iconClassName} />
-            </ButtonWithLabel>
-          )}
         </>
+      )}
+      {isLoggedIn ? (
+        <ButtonWithLabel
+          onClick={() => router.push("/setting")}
+          label="ユーザー設定"
+        >
+          <UserIcon className={iconClassName} />
+        </ButtonWithLabel>
+      ) : (
+        <ButtonWithLabel onClick={() => router.push("/login")} label="ログイン">
+          <LoginIcon className={iconClassName} />
+        </ButtonWithLabel>
       )}
     </div>
   );

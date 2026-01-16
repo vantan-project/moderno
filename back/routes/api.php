@@ -14,6 +14,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/token', function () {
     return response()->json([
       'success' => true,
+      'isAdmin' =>  !!request()->user()->is_admin,
     ]);
   });
 
