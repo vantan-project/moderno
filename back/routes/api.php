@@ -31,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/history', [OrderController::class, 'history']);
     Route::post('/', [OrderController::class, 'store']);
     Route::delete('/{id}', [OrderController::class, 'destroy']);
+    Route::patch('/{id}/ship', [OrderController::class, 'ship']);
+    Route::patch('/{id}/unship', [OrderController::class, 'unship']);
   });
 
   Route::prefix('like')->group(function () {

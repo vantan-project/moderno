@@ -14,6 +14,9 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { orderUnship } from "@/api/order-unship";
+import { orderShip } from "@/api/order-ship";
+import { showToast } from "@/utils/show-toast";
 
 export default function () {
   const router = useRouter();
@@ -130,7 +133,23 @@ export default function () {
                     ? "text-error border-error"
                     : "text-sccess border-sccess"
                 )}
-                onClick={() => {}}
+                onClick={async () => {
+                  let res;
+
+                  if (order.isShipped) {
+                    res = await orderUnship(order.id);
+                  } else {
+                    res = await orderShip(order.id);
+                  }
+
+                  if (res.messages?.length) {
+                  }
+
+                  if (res.success) {
+                    await indexApi();
+                  }
+                  await showToast(res.success, res.messages);
+                }}
               >
                 {order.isShipped ? "発送キャンセル" : "発送完了"}
               </button>

@@ -195,4 +195,42 @@ class OrderController extends Controller
       'messages' => ['注文をキャンセルしました。'],
     ]);
   }
+
+  public function ship($id)
+  {
+    $order = Order::find($id);
+
+    if ($order->is_shipped) {
+      return response()->json([
+        'success' => false,
+        'messages' => ['すでに発送済みです。'],
+      ]);
+    }
+
+    $order->update(['is_shipped' => true]);
+
+    return response()->json([
+      'success' => true,
+      'messages' => ['発送完了にしました。'],
+    ]);
+  }
+
+  public function unship($id)
+  {
+    $order = Order::find($id);
+
+    if (!$order->is_shipped) {
+      return response()->json([
+        'success' => false,
+        'messages' => ['未発送のためキャンセルできません。'],
+      ]);
+    }
+
+    $order->update(['is_shipped' => false]);
+
+    return response()->json([
+      'success' => true,
+      'messages' => ['発送をキャンセルしました。'],
+    ]);
+  }
 }
