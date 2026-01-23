@@ -4,6 +4,7 @@ import {
   FurnitureUpdateRequest,
   furnitureUpdate,
 } from "@/api/furniture-update";
+import { furnitureDestroy } from "@/api/furniture-destroy";
 import { useForm } from "react-hook-form";
 import { showToast } from "@/utils/show-toast";
 import { FolderPlusIcon } from "@/components/shared/icons/folder-plus-icon";
@@ -72,6 +73,18 @@ export default function FurnitureForm({ furniture }: Props) {
     }
   };
 
+  const handleDestroy = async () => {
+    if (furnitureId === null) return;
+
+    const res = await furnitureDestroy(furnitureId);
+
+    await showToast(res.success, res.messages);
+
+    if (res.success) {
+      router.push("/");
+    }
+  };
+
   return (
     <form
       className="flex flex-col w-full m-0 p-8 [&_input]:border [&_input]:p-2 [&_input]:mb-4 [&_input]:rounded-sm"
@@ -107,7 +120,7 @@ export default function FurnitureForm({ furniture }: Props) {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-10 text-void border-void py-8">
+      <div className="grid grid-cols-3 gap-10 text-void border-void py-4">
         <div className="flex flex-col">
           <label>商品価格</label>
           <input type="number" {...register("furniture.price")} />
@@ -131,8 +144,15 @@ export default function FurnitureForm({ furniture }: Props) {
           </select>
         </div>
       </div>
-      <button className="p-2 bg-gray" type="submit">
+      <button className="p-4 bg-gray" type="submit">
         登録
+      </button>
+      <button
+        className="p-4 mt-4 bg-error text-white"
+        type="button"
+        onClick={handleDestroy}
+      >
+        削除
       </button>
     </form>
   );
