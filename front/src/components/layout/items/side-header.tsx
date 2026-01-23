@@ -12,14 +12,15 @@ import { categoryStore } from "@/api/category-store";
 import { showToast } from "@/utils/show-toast";
 import { DeleteIcon } from "@/components/shared/icons/delete";
 import { categoryDestroy } from "@/api/category-destory";
+import { useGlobalContext } from "@/hooks/use-global-state";
 
 export function SideHeader() {
   const [categories, setCategories] = useState<
     CategoryIndexResponse["categories"]
   >([]);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
   const [name, setName] = useState("");
+  const { isAdmin } = useGlobalContext();
 
   const indexApi = async () => {
     const indexResponse = await categoryIndex();
@@ -46,10 +47,6 @@ export function SideHeader() {
   useEffect(() => {
     indexApi();
   }, []);
-
-  useEffect(() => {
-    setIsAdmin(!!Number(Cookies.get("isAdmin")));
-  }, [isAdmin]);
 
   return (
     <>

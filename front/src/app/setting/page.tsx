@@ -49,6 +49,7 @@ export default function Page() {
       setIsLoggedIn(false);
       setIsAdmin(false);
       Cookies.remove("authToken");
+      setIsAdmin(false);
       router.push("/");
     }
   };
