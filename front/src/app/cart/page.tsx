@@ -33,7 +33,7 @@ export default function Page() {
   const [opened, { open, close }] = useDisclosure(false);
   const carts = Object.entries(cartCounts)
     .filter(
-      ([furnitureId, count]) => furnitures[Number(furnitureId)] && count > 0
+      ([furnitureId, count]) => furnitures[Number(furnitureId)] && count > 0,
     )
     .map(([furnitureId, count]) => {
       const id = Number(furnitureId);
@@ -45,11 +45,11 @@ export default function Page() {
     });
   const totalCount = Object.values(cartCounts).reduce(
     (sum, count) => sum + count,
-    0
+    0,
   );
   const totalPrice = carts.reduce(
     (sum, cart) => sum + cart.price * cart.count,
-    0
+    0,
   );
   const [cardId, setCardId] = useState<string | null>(null);
 
@@ -182,7 +182,7 @@ export default function Page() {
               <div
                 className={clsx(
                   "w-42 relative",
-                  totalCount === 0 && "opacity-50"
+                  totalCount === 0 && "opacity-50",
                 )}
               >
                 <ButtonWithIcon
@@ -202,12 +202,16 @@ export default function Page() {
               <div
                 className={clsx(
                   "w-42 relative",
-                  totalCount === 0 && "opacity-50"
+                  totalCount === 0 && "opacity-50",
                 )}
               >
                 <ButtonWithIcon
                   icon={<CartIcon />}
                   onClick={() => {
+                    if (!user?.name) {
+                      router.push("/login");
+                      return;
+                    }
                     const {
                       postalCode,
                       prefecture,
@@ -228,7 +232,7 @@ export default function Page() {
 
                     if (missingFields.length > 0) {
                       const message = `${missingFields.join(
-                        "と"
+                        "と",
                       )}が入力されていません`;
                       showToast(false, [message]);
                       router.push("/setting");
@@ -296,7 +300,7 @@ export default function Page() {
               <HeartIcon
                 className={clsx(
                   likeIds.includes(cart.id) && "text-error",
-                  "w-8 h-8 hover:opacity-30"
+                  "w-8 h-8 hover:opacity-30",
                 )}
               />
             </ButtonWithLabel>

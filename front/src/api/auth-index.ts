@@ -21,7 +21,7 @@ export type AuthIndexResponse = {
   };
 };
 
-export function authIndex(): Promise<AuthIndexResponse> {
+export function authIndex(): Promise<AuthIndexResponse | { success: false }> {
   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth`;
   const authToken = Cookies.get("authToken");
 
@@ -31,5 +31,10 @@ export function authIndex(): Promise<AuthIndexResponse> {
         Authorization: `Bearer ${authToken}`,
       },
     })
-    .then((res) => res.data);
+    .then((res) => res.data)
+    .catch(() => {
+      return {
+        success: false,
+      };
+    });
 }

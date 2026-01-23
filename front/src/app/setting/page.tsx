@@ -34,6 +34,8 @@ export default function Page() {
   const indexApi = async () => {
     const res = await authIndex();
 
+    if (!res.success) return;
+
     initialValuesRef.current = res.auth;
     setUser(res.auth);
     reset(res.auth);
@@ -90,16 +92,19 @@ export default function Page() {
     if (!initialValuesRef.current) return;
 
     const initialValues = initialValuesRef.current;
-    const diffData = Object.keys(formData).reduce((acc, key) => {
-      const typedKey = key as keyof AuthIndexResponse["auth"];
-      if (
-        !isEqual(formData[typedKey], initialValues[typedKey]) &&
-        typedKey !== "cards"
-      ) {
-        acc[typedKey] = formData[typedKey];
-      }
-      return acc;
-    }, {} as Partial<AuthIndexResponse["auth"]>);
+    const diffData = Object.keys(formData).reduce(
+      (acc, key) => {
+        const typedKey = key as keyof AuthIndexResponse["auth"];
+        if (
+          !isEqual(formData[typedKey], initialValues[typedKey]) &&
+          typedKey !== "cards"
+        ) {
+          acc[typedKey] = formData[typedKey];
+        }
+        return acc;
+      },
+      {} as Partial<AuthIndexResponse["auth"]>,
+    );
 
     const updateApi = async () => {
       const res = await authUpdate({
@@ -170,7 +175,7 @@ export default function Page() {
                   if (value.length >= 4 && value[3] !== "-") {
                     setValue(
                       "postalCode",
-                      value.slice(0, 3) + "-" + value.slice(3, 7)
+                      value.slice(0, 3) + "-" + value.slice(3, 7),
                     );
                     return;
                   }
@@ -245,7 +250,7 @@ export default function Page() {
           <ConfirmButton
             className={clsx(
               buttonClassName,
-              "bg-white border border-error text-error"
+              "bg-white border border-error text-error",
             )}
             onClick={logoutApi}
             title="本当にログアウトしますか？"
@@ -267,7 +272,7 @@ export default function Page() {
           <div
             className={clsx(
               blurClassName,
-              "w-full flex justify-between items-center p-2"
+              "w-full flex justify-between items-center p-2",
             )}
           >
             <p>変更を保存してください</p>

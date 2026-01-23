@@ -40,6 +40,7 @@ export function FixedWrapper({ children }: Props) {
     const tokenApi = async () => {
       const res = await token();
       setIsLoggedIn(res.success);
+      setIsAdmin(res.isAdmin);
       Cookies.set("isAdmin", res.isAdmin ? "1" : "0");
     };
 
@@ -48,7 +49,9 @@ export function FixedWrapper({ children }: Props) {
 
   useEffect(() => {
     if (isLoggedIn) {
-      authIndex().then((res) => setUser(res.auth));
+      authIndex().then((res) => {
+        if (res.success) setUser(res.auth);
+      });
     }
   }, [isLoggedIn]);
 
@@ -81,10 +84,6 @@ export function FixedWrapper({ children }: Props) {
     };
 
     likeIndexApi();
-  }, []);
-
-  useEffect(() => {
-    setIsAdmin(!!Number(Cookies.get("isAdmin")));
   }, []);
 
   return (
