@@ -14,8 +14,12 @@ class OrderController extends Controller
   {
     $currentPage = $request['currentPage'];
     $keyword = $request['search.keyword'];
+    $userId = $request['search.userId'];
     $orders = Order::with(['furniture', 'user'])
       ->where('is_completed', true)
+      ->when($userId, function ($q) use ($userId) {
+        $q->where('user_id', $userId);
+      })
       ->when($keyword, function ($q) use ($keyword) {
         $q->where(function ($q) use ($keyword) {
           $q->whereHas('furniture', function ($q) use ($keyword) {

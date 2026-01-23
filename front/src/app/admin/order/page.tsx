@@ -43,8 +43,25 @@ export default function () {
   };
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const keyword = params.get("keyword") || "";
+    const userId = Number(params.get("userId")) || null;
+
+    setSearch({ keyword, userId });
     indexApi();
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+
+    if (search.keyword) params.set("keyword", search.keyword);
+    if (search.userId !== null) params.set("userId", String(search.userId));
+
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState(null, "", newUrl);
+
+    indexApi();
+  }, [search]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -56,7 +73,7 @@ export default function () {
   return (
     <section className="m-10">
       <div className="h-full [&>*]:border-b [&>*]:border-void text-void">
-        <div className="grid items-center grid-cols-[2fr_3fr_5fr_2fr] gap-10  [&>*]:py-2 [&>*]:px-2">
+        <div className="grid items-center grid-cols-[3fr_3fr_5fr_3fr] gap-10  [&>*]:py-2 [&>*]:px-2">
           <div className="flex items-center justify-start gap-2">
             <UserRoundIcon />
             <p>ユーザー名</p>
@@ -69,17 +86,29 @@ export default function () {
             <OrderIcon />
             <p>注文詳細</p>
           </div>
-          <div className="relative w-72 m-2">
+
+          <div className="flex gap-2 m-2">
             <input
               type="text"
-              placeholder="検索する"
-              className="rounded px-2 py-2 text-sm bg-gray-100 w-70 placeholder-void"
-              value={search.keyword}
+              placeholder="ユーザーID"
+              className="rounded px-2 py-2 text-sm bg-gray-100 w-28 placeholder-void"
+              value={search.userId || ""}
               onChange={(e) =>
-                setSearch({ ...search, keyword: e.target.value })
+                setSearch({ ...search, userId: Number(e.target.value) })
               }
             ></input>
-            <SearchIcon className="absolute right-2  top-4 bg-gray-100" />
+            <div className="relative w-72">
+              <input
+                type="text"
+                placeholder="検索する"
+                className="rounded px-2 py-2 text-sm bg-gray-100 w-70 placeholder-void"
+                value={search.keyword}
+                onChange={(e) =>
+                  setSearch({ ...search, keyword: e.target.value })
+                }
+              ></input>
+              <SearchIcon className="absolute right-2  top-4 bg-gray-100" />
+            </div>
           </div>
         </div>
         {orders.map((order) => (
@@ -104,7 +133,7 @@ export default function () {
                     {
                       style: "currency",
                       currency: "JPY",
-                    }
+                    },
                   )}
                 </div>
                 <div className="flex">
@@ -131,7 +160,7 @@ export default function () {
                   "bg-white border rounded-lg py-2 w-50 cursor-pointer",
                   order.isShipped
                     ? "text-error border-error"
-                    : "text-sccess border-sccess"
+                    : "text-sccess border-sccess",
                 )}
                 onClick={async () => {
                   let res;

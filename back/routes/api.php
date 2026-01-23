@@ -56,6 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
   Route::prefix('/user')->group(function () {
     Route::get('/', [UserController::class, 'index']);
+    Route::get('/select', [UserController::class, 'select']);
   });
 });
 
