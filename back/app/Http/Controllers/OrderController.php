@@ -13,11 +13,32 @@ class OrderController extends Controller
   public function index(Request $request)
   {
     $currentPage = $request['currentPage'];
-    $orders = Order::with('furniture')
-      ->where('is_shipped', true);
+    $keyword = $request['search.keyword'];
+    $userId = $request['search.userId'];
+    $orders = Order::with(['furniture', 'user'])
+      ->where('is_completed', true)
+      ->when($userId, function ($q) use ($userId) {
+        $q->where('user_id', $userId);
+      })
+      ->when($keyword, function ($q) use ($keyword) {
+        $q->where(function ($q) use ($keyword) {
+          $q->whereHas('furniture', function ($q) use ($keyword) {
+            $q->where('name', 'like', "%{$keyword}%");
+          })
+            ->orWhereHas('user', function ($q) use ($keyword) {
+              $q->where('name', 'like', "%{$keyword}%")
+                ->orWhere('postal_code', 'like', "%{$keyword}%")
+                ->orWhere('prefecture', 'like', "%{$keyword}%")
+                ->orWhere('city', 'like', "%{$keyword}%")
+                ->orWhere('street_address', 'like', "%{$keyword}%");
+            });
+        });
+      })
+      ->orderBy('created_at', 'desc');
     $PER_PAGE = 20;
     $orders = $orders->paginate($PER_PAGE, ['*'], 'page', $currentPage);
 
+    // TODO: furniture.name, user.name, user.postalCode, user.prefecture, user.city, user.streetAddressをsearch.keywordでlike検索したい
     return response()->json([
       'success' => true,
       'orders' => collect($orders->items())
@@ -28,10 +49,19 @@ class OrderController extends Controller
               'id' => $order->furniture->id,
               'name' => $order->furniture->name,
               'imageUrl' => $order->furniture->image_url,
+              'price' => $order->furniture->price,
+            ],
+            'user' => [
+              'name' => $order->user->name,
+              'postalCode' => $order->user->postal_code,
+              'prefecture' => $order->user->prefecture,
+              'city' => $order->user->city,
+              'streetAddress' => $order->user->street_address,
             ],
             'count' => $order->count,
             'isShipped' => (bool) $order->is_shipped,
             'isCompleted' => (bool) $order->is_completed,
+            'createdAt' => $order->created_at?->format('Y / m / d') ?? '',
           ];
         }),
       'lastPage' => $orders->lastPage(),
@@ -167,6 +197,44 @@ class OrderController extends Controller
     return response()->json([
       'success' => true,
       'messages' => ['注文をキャンセルしました。'],
+    ]);
+  }
+
+  public function ship($id)
+  {
+    $order = Order::find($id);
+
+    if ($order->is_shipped) {
+      return response()->json([
+        'success' => false,
+        'messages' => ['すでに発送済みです。'],
+      ]);
+    }
+
+    $order->update(['is_shipped' => true]);
+
+    return response()->json([
+      'success' => true,
+      'messages' => ['発送完了にしました。'],
+    ]);
+  }
+
+  public function unship($id)
+  {
+    $order = Order::find($id);
+
+    if (!$order->is_shipped) {
+      return response()->json([
+        'success' => false,
+        'messages' => ['未発送のためキャンセルできません。'],
+      ]);
+    }
+
+    $order->update(['is_shipped' => false]);
+
+    return response()->json([
+      'success' => true,
+      'messages' => ['発送をキャンセルしました。'],
     ]);
   }
 }

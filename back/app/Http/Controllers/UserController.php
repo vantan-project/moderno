@@ -37,4 +37,17 @@ class UserController extends Controller
       })
     ]);
   }
+
+  public function select()
+  {
+    return User::all()->map(function ($user) {
+      return [
+        'success' => true,
+        'users' => [
+          'id' => $user->id,
+          'name' => $user->name
+        ],
+      ];
+    });
+  }
 }

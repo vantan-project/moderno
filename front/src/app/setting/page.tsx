@@ -24,7 +24,7 @@ import { CardStoreButton } from "@/components/features/setting/card-store-button
 
 export default function Page() {
   const router = useRouter();
-  const { setIsLoggedIn, user, setUser } = useGlobalContext();
+  const { setIsLoggedIn, setIsAdmin, user, setUser } = useGlobalContext();
 
   const { register, handleSubmit, reset, setValue, watch } =
     useForm<AuthIndexResponse["auth"]>();
@@ -45,6 +45,7 @@ export default function Page() {
 
     if (res.success) {
       setIsLoggedIn(false);
+      setIsAdmin(false);
       Cookies.remove("authToken");
       router.push("/");
     }
@@ -56,6 +57,7 @@ export default function Page() {
 
     if (res.success) {
       setIsLoggedIn(false);
+      setIsAdmin(false);
       Cookies.remove("authToken");
       router.push("/");
     }

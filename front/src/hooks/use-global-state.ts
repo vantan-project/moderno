@@ -12,7 +12,8 @@ type GlobalContextType = {
   setLikeIds: (likeIds: number[]) => void;
   user: AuthIndexResponse["auth"];
   setUser: (user: AuthIndexResponse["auth"]) => void;
-  // TODO: isAdminの追加
+  isAdmin: boolean;
+  setIsAdmin: (isAdmin: boolean) => void;
 };
 
 export const GlobalContext = createContext<GlobalContextType | undefined>(

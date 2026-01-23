@@ -8,15 +8,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
 import { authSignUp, AuthSignUpRequest } from "@/api/auth-sign-up";
 
 type FormInput = AuthSignUpRequest & {
   confirmPassword?: string;
 };
 
-export default function SignUpPage() {
-  const router = useRouter();
+export default function () {
   const {
     register,
     handleSubmit,

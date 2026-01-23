@@ -9,10 +9,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
 
-export default function SignUpPage() {
-  const router = useRouter();
+export default function () {
   const {
     register,
     handleSubmit,

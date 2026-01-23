@@ -31,6 +31,7 @@ export function FixedWrapper({ children }: Props) {
     cards: [],
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [cartCounts, setCartCounts] = useState<CartCounts>({});
   const [likeIds, setLikeIds] = useState<number[]>([]);
   const cartIds = Object.keys(cartCounts).map(Number);
@@ -39,6 +40,7 @@ export function FixedWrapper({ children }: Props) {
     const tokenApi = async () => {
       const res = await token();
       setIsLoggedIn(res.success);
+      Cookies.set("isAdmin", res.isAdmin ? "1" : "0");
     };
 
     tokenApi();
@@ -81,6 +83,10 @@ export function FixedWrapper({ children }: Props) {
     likeIndexApi();
   }, []);
 
+  useEffect(() => {
+    setIsAdmin(!!Number(Cookies.get("isAdmin")));
+  }, []);
+
   return (
     <GlobalContext.Provider
       value={{
@@ -93,6 +99,8 @@ export function FixedWrapper({ children }: Props) {
         setLikeIds,
         user,
         setUser,
+        isAdmin,
+        setIsAdmin,
       }}
     >
       <div className="fixed top-0 left-0 z-20">
