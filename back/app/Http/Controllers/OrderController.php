@@ -10,120 +10,231 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    public function index(Request $request) {
-        $currentPage = $request['currentPage'];
-        $orders = Order::with('furniture');
-        $PER_PAGE = 20;
-        $orders = $orders->paginate($PER_PAGE, ['*'], 'page', $currentPage);
-
-        return response()->json([
-            'success' => true,
-            'orders' => collect($orders->items())
-                ->map(function ($order) {
-                    return [
-                        'id' => $order->id,
-                        'furniture' => [
-                            'id' => $order->furniture->id,
-                            'name' => $order->furniture->name,
-                            'imageUrl' => $order->furniture->image_url,
-                        ],
-                        'count' => $order->count,
-                        'isShipped' => (bool) $order->is_shipped,
-                        'isCompleted' => (bool) $order->is_completed,
-                    ];
-                }),
-            'lastPage' => $orders->lastPage(),
-        ]);
-    }
-
-    public function history(Request $request) {
-        $authUser = request()->user();
-        $currentPage = $request['currentPage'];
-        $orders = $authUser->orders()->with('furniture');
-        $PER_PAGE = 20;
-        $orders = $orders->paginate($PER_PAGE, ['*'], 'page', $currentPage);
-
-        return response()->json([
-            'success' => true,
-            'orders' => collect($orders->items())
-                ->map(function ($order) {
-                    return [
-                        'id' => $order->id,
-                        'furniture' => [
-                            'id' => $order->furniture->id,
-                            'name' => $order->furniture->name,
-                            'imageUrl' => $order->furniture->image_url,
-                        ],
-                        'count' => $order->count,
-                        'isShipped' => (bool) $order->is_shipped,
-                        'isCompleted' => (bool) $order->is_completed,
-                    ];
-                }),
-            'lastPage' => $orders->lastPage(),
-        ]);
-    }
-
-    public function store(OrderStoreRequest $request)
-    {
-        $authUser = request()->user();
-        $orders = $request['orders'];
-
-        $orderCounts = collect($orders)
-            ->mapWithKeys(function ($order) {
-                return [$order['furnitureId'] => $order['count']];
+  public function index(Request $request)
+  {
+    $currentPage = $request['currentPage'];
+    $keyword = $request['search.keyword'];
+    $userId = $request['search.userId'];
+    $orders = Order::with(['furniture', 'user'])
+      ->where('is_completed', true)
+      ->when($userId, function ($q) use ($userId) {
+        $q->where('user_id', $userId);
+      })
+      ->when($keyword, function ($q) use ($keyword) {
+        $q->where(function ($q) use ($keyword) {
+          $q->whereHas('furniture', function ($q) use ($keyword) {
+            $q->where('name', 'like', "%{$keyword}%");
+          })
+            ->orWhereHas('user', function ($q) use ($keyword) {
+              $q->where('name', 'like', "%{$keyword}%")
+                ->orWhere('postal_code', 'like', "%{$keyword}%")
+                ->orWhere('prefecture', 'like', "%{$keyword}%")
+                ->orWhere('city', 'like', "%{$keyword}%")
+                ->orWhere('street_address', 'like', "%{$keyword}%");
             });
-        $furnitures = Furniture::whereIn('id', collect($orders)->pluck('furnitureId'))
-            ->get();
-
-        DB::transaction(function () use ($authUser, $orderCounts, $furnitures) {
-            $insertRecords = [];
-
-            foreach ($furnitures as $furniture) {
-                $needed = $orderCounts[$furniture->id];
-
-                if ($furniture->stock < $needed) {
-                    $insertRecords[] = [
-                        'user_id' => $authUser->id,
-                        'furniture_id' => $furniture->id,
-                        'count' => $needed,
-                        'is_completed' => false,
-                    ];
-                    continue;
-                }
-                $furniture->decrement('stock', $needed);
-
-                $insertRecords[] = [
-                    'user_id' => $authUser->id,
-                    'furniture_id' => $furniture->id,
-                    'count' => $needed,
-                    'is_completed' => true,
-                ];
-            }
-
-            Order::insert($insertRecords);
         });
+      })
+      ->orderBy('created_at', 'desc');
+    $PER_PAGE = 20;
+    $orders = $orders->paginate($PER_PAGE, ['*'], 'page', $currentPage);
 
-        return response()->noContent(204);
-    }
+    // TODO: furniture.name, user.name, user.postalCode, user.prefecture, user.city, user.streetAddressをsearch.keywordでlike検索したい
+    return response()->json([
+      'success' => true,
+      'orders' => collect($orders->items())
+        ->map(function ($order) {
+          return [
+            'id' => $order->id,
+            'furniture' => [
+              'id' => $order->furniture->id,
+              'name' => $order->furniture->name,
+              'imageUrl' => $order->furniture->image_url,
+              'price' => $order->furniture->price,
+            ],
+            'user' => [
+              'name' => $order->user->name,
+              'postalCode' => $order->user->postal_code,
+              'prefecture' => $order->user->prefecture,
+              'city' => $order->user->city,
+              'streetAddress' => $order->user->street_address,
+            ],
+            'count' => $order->count,
+            'isShipped' => (bool) $order->is_shipped,
+            'isCompleted' => (bool) $order->is_completed,
+            'createdAt' => $order->created_at?->format('Y / m / d') ?? '',
+          ];
+        }),
+      'lastPage' => $orders->lastPage(),
+    ]);
+  }
 
-    public function destroy($id)
-    {
-        $authUser = request()->user();
-        $order = $authUser->orders()->find($id);
+  public function stockout(Request $request)
+  {
+    $orders = Order::with('furniture')
+      ->where('is_completed', false)
+      ->orderBy('created_at', 'desc')
+      ->get();
 
-        if ($order->is_shopped) {
-            return response()->json([
-                'success' => false,
-                'messages' => ['発送後のため注文をキャンセルできません。'],
-            ]);
+    return response()->json([
+      'success' => true,
+      'orders' => $orders->map(function ($order) {
+        return [
+          'id' => $order->id,
+          'furniture' => [
+            'id' => $order->furniture->id,
+            'name' => $order->furniture->name,
+            'imageUrl' => $order->furniture->image_url,
+            'price' => $order->furniture->price,
+          ],
+          'count' => $order->count,
+          'isShipped' => (bool) $order->is_shipped,
+          'isCompleted' => (bool) $order->is_completed,
+          'createdAt' => $order->created_at?->format('Y/m/d') ?? '',
+        ];
+      }),
+    ]);
+  }
+
+  public function history(Request $request)
+  {
+    $authUser = request()->user();
+    $currentPage = $request['currentPage'];
+    $orders = $authUser->orders()
+      ->with('furniture')
+      ->where('is_completed', true)
+      ->orderBy('created_at', 'desc');
+    $PER_PAGE = 20;
+    $orders = $orders->paginate($PER_PAGE, ['*'], 'page', $currentPage);
+
+    return response()->json([
+      'success' => true,
+      'orders' => collect($orders->items())
+        ->map(function ($order) {
+          return [
+            'id' => $order->id,
+            'furniture' => [
+              'id' => $order->furniture->id,
+              'name' => $order->furniture->name,
+              'imageUrl' => $order->furniture->image_url,
+              'price' => $order->furniture->price,
+            ],
+            'count' => $order->count,
+            'isShipped' => (bool) $order->is_shipped,
+            'isCompleted' => (bool) $order->is_completed,
+            'createdAt' => $order->created_at?->format('Y/m/d') ?? '',
+          ];
+        }),
+      'lastPage' => $orders->lastPage(),
+    ]);
+  }
+
+  public function store(OrderStoreRequest $request)
+  {
+    $authUser = request()->user();
+    $orders = $request['orders'];
+
+    $orderCounts = collect($orders)
+      ->mapWithKeys(function ($order) {
+        return [$order['furnitureId'] => $order['count']];
+      });
+    $furnitures = Furniture::whereIn('id', collect($orders)->pluck('furnitureId'))
+      ->get();
+
+    DB::transaction(function () use ($authUser, $orderCounts, $furnitures) {
+      $insertRecords = [];
+      $now = now();
+
+      foreach ($furnitures as $furniture) {
+        $needed = $orderCounts[$furniture->id];
+
+        if ($furniture->stock < $needed) {
+          $insertRecords[] = [
+            'user_id' => $authUser->id,
+            'furniture_id' => $furniture->id,
+            'count' => $needed,
+            'is_completed' => false,
+            'created_at' => $now,
+            'updated_at' => $now,
+          ];
+          continue;
         }
+        $furniture->decrement('stock', $needed);
 
-        $order->furniture->increment('stock', $order->count);
-        $order->delete();
+        $insertRecords[] = [
+          'user_id' => $authUser->id,
+          'furniture_id' => $furniture->id,
+          'count' => $needed,
+          'is_completed' => true,
+          'created_at' => $now,
+          'updated_at' => $now,
+        ];
+      }
 
-        return response()->json([
-            'success' => true,
-            'messages' => ['注文をキャンセルしました。'],
-        ]);
+      Order::insert($insertRecords);
+    });
+
+    return response()->json([
+      'success' => true,
+      'messages' => ['注文を完了しました。'],
+    ]);
+  }
+
+  public function destroy($id)
+  {
+    $authUser = request()->user();
+    $order = $authUser->orders()->find($id);
+
+    if ($order->is_shipped) {
+      return response()->json([
+        'success' => false,
+        'messages' => ['発送後のため注文をキャンセルできません。'],
+      ]);
     }
+
+    $order->furniture->increment('stock', $order->count);
+    $order->delete();
+
+    return response()->json([
+      'success' => true,
+      'messages' => ['注文をキャンセルしました。'],
+    ]);
+  }
+
+  public function ship($id)
+  {
+    $order = Order::find($id);
+
+    if ($order->is_shipped) {
+      return response()->json([
+        'success' => false,
+        'messages' => ['すでに発送済みです。'],
+      ]);
+    }
+
+    $order->update(['is_shipped' => true]);
+
+    return response()->json([
+      'success' => true,
+      'messages' => ['発送完了にしました。'],
+    ]);
+  }
+
+  public function unship($id)
+  {
+    $order = Order::find($id);
+
+    if (!$order->is_shipped) {
+      return response()->json([
+        'success' => false,
+        'messages' => ['未発送のためキャンセルできません。'],
+      ]);
+    }
+
+    $order->update(['is_shipped' => false]);
+
+    return response()->json([
+      'success' => true,
+      'messages' => ['発送をキャンセルしました。'],
+    ]);
+  }
 }

@@ -24,6 +24,11 @@ return new class extends Migration
             $table->string('street_address')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
+            $table->fullText(
+                ['name', 'email', 'postal_code', 'prefecture', 'city', 'street_address'],
+                'users_fulltext_idx'
+            );
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

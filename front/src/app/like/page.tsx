@@ -4,8 +4,11 @@ import { Search } from "@/components/shared/search";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { GalleryLayout } from "@/components/shared/gallery-layout";
-import { likeIndex } from "@/api/like-index";
-import { furnitureLike, FurnitureLikeRequest, FurnitureLikeResponse } from "@/api/furniture-like";
+import {
+  furnitureLike,
+  FurnitureLikeRequest,
+  FurnitureLikeResponse,
+} from "@/api/furniture-like";
 
 export default function Page() {
   const [search, SetSearch] = useState<FurnitureLikeRequest["search"]>({
@@ -16,7 +19,6 @@ export default function Page() {
     FurnitureLikeResponse["furnitures"]
   >([]);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [likeIds, setLikeIds] = useState<number[]>([]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -35,15 +37,6 @@ export default function Page() {
     setIsAdmin(!!Number(Cookies.get("isAdmin")));
   }, [isAdmin]);
 
-  useEffect(() => {
-    const likeIndexApi = async () => {
-      const likeIndexResponse = await likeIndex();
-      setLikeIds(likeIndexResponse.likeIds);
-    };
-
-    likeIndexApi();
-  }, []);
-
   return (
     <div>
       <Search
@@ -51,12 +44,7 @@ export default function Page() {
         onChange={(e) => SetSearch({ ...search, keyword: e.target.value })}
       />
 
-      <GalleryLayout
-        furnitures={furnitures}
-        isAdmin={isAdmin}
-        likeIds={likeIds}
-        setLikeIds={setLikeIds}
-      />
+      <GalleryLayout furnitures={furnitures} isAdmin={isAdmin} />
     </div>
   );
 }

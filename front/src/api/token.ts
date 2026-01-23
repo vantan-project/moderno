@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 
 type TokenResponse = {
   success: boolean;
+  isAdmin: boolean;
 };
 
 export async function token() {
@@ -16,5 +17,5 @@ export async function token() {
       },
     })
     .then((res) => res.data)
-    .catch(() => ({ success: false }));
+    .catch(() => ({ success: false, isAdmin: false }));
 }

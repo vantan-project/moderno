@@ -12,7 +12,7 @@ export function ButtonWithLabel({ onClick, label, children }: Props) {
       onClick={onClick}
     >
       {children}
-      <p className="text-[10px]">{label}</p>
+      <p className="text-[10px] whitespace-nowrap">{label}</p>
     </button>
   );
 }

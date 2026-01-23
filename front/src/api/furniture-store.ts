@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 export type FurnitureStoreRequest = {
   furniture: {
     name: string;
-    imageFile: FileList | null;
+    imageFile: File | null;
     detail: string;
     price: number;
     categoryId: number | null;
@@ -29,7 +29,7 @@ export async function furnitureStore({
       {
         furniture: {
           ...furniture,
-          imageFile: furniture.imageFile ? furniture.imageFile[0] : null,
+          imageFile: furniture.imageFile,
         },
       },
       {
