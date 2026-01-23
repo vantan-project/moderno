@@ -22,11 +22,19 @@ export default function () {
   const router = useRouter();
   const [search, setSearch] = useState<OrderIndexRequest["search"]>({
     keyword: "",
-    userId: null,
+    userId: 0,
   });
   const [orders, setOrders] = useState<OrderIndexResponse["orders"]>([]);
 
   const indexApi = async () => {
+    const params = new URLSearchParams();
+
+    if (search.keyword) params.set("keyword", search.keyword);
+    if (search.userId !== null)
+      params.set("userId", String(search.userId || 0));
+
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState(null, "", newUrl);
     const authToken = await token();
     if (!authToken.success) {
       router.push("/login");
@@ -45,23 +53,10 @@ export default function () {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const keyword = params.get("keyword") || "";
-    const userId = Number(params.get("userId")) || null;
+    const userId = Number(params.get("userId")) || 0;
 
     setSearch({ keyword, userId });
-    indexApi();
   }, []);
-
-  useEffect(() => {
-    const params = new URLSearchParams();
-
-    if (search.keyword) params.set("keyword", search.keyword);
-    if (search.userId !== null) params.set("userId", String(search.userId));
-
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
-    window.history.replaceState(null, "", newUrl);
-
-    indexApi();
-  }, [search]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -133,7 +128,7 @@ export default function () {
                     {
                       style: "currency",
                       currency: "JPY",
-                    },
+                    }
                   )}
                 </div>
                 <div className="flex">
@@ -160,7 +155,7 @@ export default function () {
                   "bg-white border rounded-lg py-2 w-50 cursor-pointer",
                   order.isShipped
                     ? "text-error border-error"
-                    : "text-sccess border-sccess",
+                    : "text-sccess border-sccess"
                 )}
                 onClick={async () => {
                   let res;

@@ -116,7 +116,7 @@ export default function Page() {
               <button
                 className="bg-white border border-void rounded-lg py-2 w-50 cursor-pointer"
                 onClick={() => {
-                  router.push(``);
+                  router.push(`/admin/order?userId=${user.id}`);
                 }}
               >
                 ユーザー注文状況へ
